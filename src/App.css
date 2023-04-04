@@ -13,8 +13,29 @@
   }
 }
 
+html, body {
+  margin: 0;
+  height: 100%;
+}
+
+body {	
+	background: linear-gradient(to bottom, #B721FF, #2AF598, #fec051, #FEE140, #FA709A );
+	background-size: 100%;
+	background-repeat: no-repeat;
+}
+
+body:before{
+	content:'';
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	width: 100%;
+	z-index: -1;
+	background: linear-gradient(to right bottom, rgba(255,255,255,0.2), #21D4FD 75%);
+}
+
 .App-header {
-  background-color: #ece6e3;
+  background-image: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%);;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -22,6 +43,19 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: #222;
+}
+
+.ldBody {
+  background-color: #fff;
+  padding: 10px 20px;
+  margin-bottom: 80px;
+  border-radius: 5px;
+  box-shadow: 0px 0px 10px rgb(0 0 0 / 5%);
+}
+
+.inlineIcon {
+  margin-bottom: 7px;
+  margin-left: 10px;
 }
 
 .App-link {
