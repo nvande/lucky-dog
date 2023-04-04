@@ -19,7 +19,7 @@ html, body {
 }
 
 body {	
-	background: linear-gradient(to bottom, #B721FF, #2AF598, #fec051, #FEE140, #FA709A );
+	background: linear-gradient(to bottom, #21D4FD, #2AF598, #fec051, #FEE140, #21D4FD );
 	background-size: 100%;
 	background-repeat: no-repeat;
 }
@@ -31,7 +31,7 @@ body:before{
 	bottom: 0;
 	width: 100%;
 	z-index: -1;
-	background: linear-gradient(to right bottom, rgba(255,255,255,0.2), #21D4FD 75%);
+	background: linear-gradient(to right bottom, rgba(255,255,255,0.2), #2AF598 75%);
 }
 
 .App-header {
@@ -60,6 +60,11 @@ body:before{
 .inlineIcon {
   margin-bottom: 7px;
   margin-left: 10px;
+}
+
+.btn-flat {
+  background-color: purple;
+  color: white;
 }
 
 .App-link {
