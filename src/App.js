@@ -2,6 +2,7 @@ import './App.css';
 
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
+import BrowsePage from './pages/BrowsePage';
 
 import {
   BrowserRouter as Router,
@@ -16,8 +17,8 @@ function App() {
         <Routes>
           <Route exact path="/" element={<HomePage/>}/>
           <Route path="/login" element={<LoginPage/>}/>
-          {/* TODO: more routes
           <Route path="/browse" element={<BrowsePage/>}/>
+          {/* TODO: more routes
           <Route path="/match" element={<MatchPage/>}/>
           */}
         </Routes>
