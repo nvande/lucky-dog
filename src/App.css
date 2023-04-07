@@ -34,9 +34,8 @@ body:before{
 	background: linear-gradient(to right bottom, rgba(255,255,255,0.2), #2AF598 75%);
 }
 
-.App-header {
+.pageHeader {
   background-image: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%);;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -62,9 +61,23 @@ body:before{
   margin-left: 10px;
 }
 
-.btn-flat {
-  background-color: purple;
+.breed-menu {
+  max-height: 200px;
+  overflow-y: scroll;
+}
+
+.dogObject .card-img-overlay .card-text {
   color: white;
+  text-shadow: 0 0 2px #111;
+}
+
+.btn-flat {
+  background-color: #7d1374;
+  color: white;
+}
+
+.selected {
+  background-color: #e6e6e6;
 }
 
 .App-link {

@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Container, Row, Col, Button, Form, Alert, InputGroup } from 'react-bootstrap';
-import { Link, Navigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 
-import login from '../utility/LoginUtility.js';
+import { login } from '../utility/LoginUtility.js';
 
 import constraints from '../validate/validate.js';
 
@@ -15,13 +15,11 @@ export default function LoginComponent() {
 		last: ''
 	});
 	const [email, setEmail] = useState('');
-
 	const [error, setError] = useState(false);
 	const [errors, setErrors] = useState([]);
 	const [success, setSuccess] = useState(false);
     const [loading, setLoading] = useState(false);
 	const [redirect, setRedirect] = useState(null);
-	const [validation, setValidation] = useState(undefined);
 
     const validateFields = () => {
     	let errors = validate({
