@@ -9,7 +9,7 @@ const constraints = {
       }
     },
     last_name: {
-      presence: {allowEmpty: false},
+      presence: {allowEmpty: true},
     },
     email_address: {
       presence: {allowEmpty: false},

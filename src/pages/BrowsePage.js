@@ -1,12 +1,11 @@
 import PageComponent from '../components/PageComponent';
+import BrowseComponent from '../components/BrowseComponent';
 
 function BrowsePage() {
 	return (
         <PageComponent>
             <div className="mt-5">
-                <h1>
-                    Logged in!
-                </h1>
+                <BrowseComponent/>
             </div>
         </PageComponent>
 	);
