@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Button, ButtonGroup, Row, DropdownButton, Dropdown, Card, Container, Col } from 'react-bootstrap';
 
+import { DragDropContext, Draggable } from 'react-beautiful-dnd';
+import StrictModeDroppable from './dnd/StrictModeDroppable.js';
+
 import { search, getBreeds } from '../utility/SearchUtility.js';
 import { dogInfo, getCityByZip } from '../utility/DogObjectUtility.js';
 
@@ -16,9 +19,13 @@ function BrowseComponent() {
 	const [total, setTotal] = useState(0);
 	const [page, setPage] = useState(0);
 
+	const [favDogObjects, setFavDogObjects] = useState([]);
+	const [favDogCities, setFavDogCities] = useState({});
+
 	const [nextUrl, setNextUrl] = useState(null);
 	const [prevUrl, setPrevUrl] = useState(null);
 	
+	const [dragging, setDragging] = useState(false);
 	const [loading, setLoading] = useState(true);
 	const [dogLoading, setDogLoading] = useState(false);
 	const [error, setError] = useState(null);
@@ -88,7 +95,11 @@ function BrowseComponent() {
 		try {
             await dogInfo(dogIds).then((response) => {
 			  if(response.success) {
-    		  	setDogObjects(response.dogObjects);
+
+				// don't show the dog object if we've already got it in our favorites
+				// this can happen if we return to a page where we already took a fav
+				const dogs = response.dogObjects.filter(item1 => !favDogObjects.some(item2 => item2.id === item1.id));
+    		  	setDogObjects(dogs);
 			  }
 			});
         } catch (error) {
@@ -118,6 +129,97 @@ function BrowseComponent() {
 		  setSelectedBreeds([...selectedBreeds, breed]);
 		}
 	};
+
+	const reorder = (list, startIndex, endIndex) => {
+		const result = Array.from(list);
+		const [removed] = result.splice(startIndex, 1);
+		result.splice(endIndex, 0, removed);
+  
+		return result;
+	};
+
+	const onDragStart = () => {
+		setDragging(true);
+	}
+
+	const onDragEnd = (result) => {
+		setDragging(false);
+	  
+		// dropped outside the list
+		if (!result.destination) {
+		  return;
+		}
+	  
+		const sourceDroppableId = result.source.droppableId;
+		const destinationDroppableId = result.destination.droppableId;
+	  
+		if (sourceDroppableId === 'dogDrop' && destinationDroppableId === 'favDrop') {
+		  const dogs = [...dogObjects];
+		  const [removed] = dogs.splice(result.source.index, 1);
+	  
+		  // remove action
+		  setDogObjects(dogs);
+	  
+		  // add action
+		  // but quit out if it's a duplicate (happens if page changed)
+		  if (favDogObjects.some((dog) => dog.id === removed.id)) {
+			console.log('dupe!');
+			return;
+		  }
+	  
+		  // add dog to the correct location in the new list
+		  const newFavDogObjects = [...favDogObjects];
+		  if (result.destination.index === 0) {
+			newFavDogObjects.unshift(removed);
+		  } else if (result.destination.index === favDogObjects.length) {
+			newFavDogObjects.push(removed);
+		  } else {
+			newFavDogObjects.splice(result.destination.index, 0, removed);
+		  }
+		  setFavDogObjects(newFavDogObjects);
+		} else if (sourceDroppableId === 'favDrop' && destinationDroppableId === 'dogDrop') {
+		  const favs = [...favDogObjects];
+		  const [removed] = favs.splice(result.source.index, 1);
+	  
+		  // remove action
+		  setFavDogObjects(favs);
+	  
+		  // add action
+		  if (dogObjects.some((dog) => dog.id === removed.id)) {
+			console.log('dupe.');
+			return;
+		  }
+	  
+		  // add dog to the correct location in the new list
+		  const newDogObjects = [...dogObjects];
+		  if (result.destination.index === 0) {
+			newDogObjects.unshift(removed);
+		  } else if (result.destination.index === dogObjects.length) {
+			newDogObjects.push(removed);
+		  } else {
+			newDogObjects.splice(result.destination.index, 0, removed);
+		  }
+		  setDogObjects(newDogObjects);
+		} else {
+		  // while not serving a functional purpose,
+		  // allowing users to reorder their search
+		  // or their favorite dogs
+		  // just feels 'right', even if this
+		  // doesn't persist when the page is left
+		  const items = reorder(
+			sourceDroppableId === 'dogDrop' ? dogObjects : favDogObjects,
+			result.source.index,
+			result.destination.index
+		  );
+	  
+		  if (sourceDroppableId === 'dogDrop') {
+			setDogObjects(items);
+		  } else if (sourceDroppableId === 'favDrop') {
+			setFavDogObjects(items);
+		  }
+		}
+	  };
+	  
 
 	if (loading) {
 	    return <div>Loading...</div>
@@ -154,25 +256,105 @@ function BrowseComponent() {
 				</p>
 			}
 			{dogObjects && 
-				<Container className='mt-5'>
-					<Row xs={1} md={2} lg={5}>
-						{dogObjects.map((dogObject) => (
-						<Col key={dogObject.id} className='dogObject'>
-							<Card className='mb-4'>
-								<Card.Body>
-									<Card.Img variant="top" src={dogObject.img} />
-									<Card.ImgOverlay>
-										<Card.Text>{dogCities[dogObject.id] ?? `Zip Code: ${dogObject.zip_code}`}</Card.Text>
-									</Card.ImgOverlay>
-									<Card.Title>{dogObject.name}</Card.Title>
-									<Card.Subtitle className="mb-2 text-muted">Age {dogObject.age}</Card.Subtitle>
-									<Card.Text>{dogObject.breed}</Card.Text>
-								</Card.Body>
-							</Card>
-						</Col>
+				<div className="container-fluid middle-container">
+				<div className="row">
+				<DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
+					<StrictModeDroppable droppableId="dogDrop" direction="vertical"
+						 renderClone={(provided, snapshot, rubric) => (
+							<div
+							{...provided.draggableProps}
+							{...provided.dragHandleProps}
+							ref={provided.innerRef}
+							>		
+								<Card className={`dragging-dog ${dragging && 'isDragging'}`}>
+									<Card.Body>
+										<Card.Img variant="top" src={dogObjects[rubric.source.index].img} />
+										<Card.ImgOverlay>
+											<Card.Text>{dogCities[dogObjects[rubric.source.index].id] ?? `Zip Code: ${dogObjects[rubric.source.index].zip_code}`}</Card.Text>
+										</Card.ImgOverlay>
+										<Card.Title>{dogObjects[rubric.source.index].name}</Card.Title>
+										<Card.Subtitle className="mb-2 text-muted">Age {dogObjects[rubric.source.index].age}</Card.Subtitle>
+										<Card.Text>{dogObjects[rubric.source.index].breed}</Card.Text>
+									</Card.Body>
+								</Card>
+							</div>
+						)}
+					>
+					{(provided, snapshot) => (
+						<Row
+						className="justify-content-center"
+						ref={provided.innerRef}
+						{...provided.droppableProps}
+						>
+						{dogObjects.map((dogObject, index) => (
+							<Draggable key={dogObject.id} draggableId={dogObject.id} index={index}>
+							{(provided, snapshot) => (
+								<Col
+									xs={12}
+									className='dogObject'
+									ref={provided.innerRef}
+									{...provided.draggableProps}
+									{...provided.dragHandleProps}
+								>
+								<Card className='mb-4'>
+									<Card.Body>
+										<Card.Img variant="top" src={dogObject.img} />
+										<Card.ImgOverlay>
+											<Card.Text>{dogCities[dogObject.id] ?? `Zip Code: ${dogObject.zip_code}`}</Card.Text>
+										</Card.ImgOverlay>
+										<Card.Title>{dogObject.name}</Card.Title>
+										<Card.Subtitle className="mb-2 text-muted">Age {dogObject.age}</Card.Subtitle>
+										<Card.Text>{dogObject.breed}</Card.Text>
+									</Card.Body>
+								</Card>
+								</Col>
+							)}
+							</Draggable>
 						))}
-					</Row>
-				</Container>
+						{provided.placeholder}
+						</Row>
+					)}
+					</StrictModeDroppable>
+					<div className={`right-side-container ${dragging && 'dragging'}`}>
+					<StrictModeDroppable droppableId="favDrop" direction="vertical">
+					{(provided, snapshot) => (
+						<div
+						className='right-side-droppable'
+						ref={provided.innerRef}
+						{...provided.droppableProps}
+						>
+						{favDogObjects.map((dogObject, index) => (
+							<Draggable key={dogObject.id} draggableId={dogObject.id} index={index}>
+							{(provided, snapshot) => (
+								<div
+									className='dogObject'
+									ref={provided.innerRef}
+									{...provided.draggableProps}
+									{...provided.dragHandleProps}
+								>
+								<Card className='mb-4'>
+									<Card.Body>
+										<Card.Img variant="top" src={dogObject.img} />
+										<Card.ImgOverlay>
+											<Card.Text>{dogCities[dogObject.id] ?? `Zip Code: ${dogObject.zip_code}`}</Card.Text>
+										</Card.ImgOverlay>
+										<Card.Title>{dogObject.name}</Card.Title>
+										<Card.Subtitle className="mb-2 text-muted">Age {dogObject.age}</Card.Subtitle>
+										<Card.Text>{dogObject.breed}</Card.Text>
+									</Card.Body>
+								</Card>
+								</div>
+							)}
+							</Draggable>
+						))}
+						{provided.placeholder}
+						</div>
+					)}
+					</StrictModeDroppable>
+					</div>
+				</DragDropContext>
+				</div>
+				</div>
 			}
 			<ButtonGroup className="text-center mt-3">
 				<Button onClick={handlePrev} disabled={!prevUrl || page == 0}>Prev</Button>
