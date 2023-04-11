@@ -8,8 +8,7 @@ function PageComponent(props) {
     <div>
         <HeaderComponent/>
         <div className={'container ldBody mt-sm-5'}>
-        
-        {props.children}
+          {props.children}
         <FooterComponent footer={footer}/>
         </div>
     </div>
