@@ -2,17 +2,6 @@
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
 html, body {
   margin: 0;
   height: 100%;
@@ -33,8 +22,16 @@ body:before{
 	background: linear-gradient(to right bottom, rgba(255,255,255,0.2), #2AF598 75%);
 }
 
+.header-container {
+  padding: 0;
+}
+
+.logout-button {
+  font-size: 12px;
+}
+
 .pageHeader {
-  background: linear-gradient(to left top, rgba(255,255,255,0.2), #2AF598 75%);;
+  background: transparent;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -51,10 +48,25 @@ body:before{
   color: #fff;
   line-height: 36px;
   background-color: #7d1374;
+  border: 4px solid #7d1374;
   display: inline-block;
   border-radius: 5px;
   padding: 8px 16px;
   margin: 0 0;
+  position: relative;
+  overflow: hidden;
+  padding-bottom: 10px;
+}
+
+.page-title .logo-arc {
+  background: linear-gradient(to right bottom, rgb(255, 255, 91), #ffd230 75%);
+  position: absolute;
+  border-radius: 50%;
+  left: 0;
+  top: 85%;
+  display: inline-block;
+  width: 100%;
+  height: 50%;
 }
 
 .ldBody {
@@ -283,6 +295,8 @@ body:before{
   }
 
   .right-side-title {
+    margin-top: -20px;
+    margin-left: 5px!important;
     font-size: 12px;
   }
 
