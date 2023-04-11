@@ -6,6 +6,8 @@ import StrictModeDroppable from './dnd/StrictModeDroppable.js';
 
 import { search, getBreeds } from '../utility/SearchUtility.js';
 import { dogInfo, getCityByZip } from '../utility/DogObjectUtility.js';
+import DogComponent from './dogs/DogComponent.js';
+import BreedDropdownComponent from './dogs/BreedDropdownComponent.js';
 
 function BrowseComponent() {
 	const [breeds, setBreeds] = useState([]);
@@ -36,7 +38,9 @@ function BrowseComponent() {
 	}, []);
 
 	useEffect(() => {
-		fetchDogObjects(resultIds);
+		fetchDogObjects(resultIds).then(() => {
+			fetchCities();
+		})
 	}, [resultIds]);
 
 	useEffect(() => {
@@ -44,19 +48,20 @@ function BrowseComponent() {
 		setPage(0);
 	}, [selectedBreeds, sortAsc]);
 
-	useEffect(() => {
-		// Call getCityByZip for each dog object and update state with the result
-		const fetchCities = async () => {
-		  const newCities = {};
-		  for (const dogObject of dogObjects) {
-			const city = await getCityByZip(dogObject.zip_code);
-			newCities[dogObject.id] = city;
-		  }
-		  
-		  setDogCities(newCities);
-		};
-		fetchCities();
-	}, [dogObjects]);
+	const fetchCities = async () => {
+		const newCities = {};
+		for (const dogObject of dogObjects) {
+		  console.log(dogObject.zip_code)
+		  const city = await getCityByZip(dogObject.zip_code);
+		  console.log(city);
+		  newCities[dogObject.id] = city;
+		}
+		
+		console.log(newCities);
+
+		setDogCities(newCities);
+		console.log(dogCities);
+	};
 
 	const fetchBreeds = async() => {
 		setLoading(true);
@@ -226,137 +231,115 @@ function BrowseComponent() {
 	}
 
 	return (
-		<Row>
-			<DropdownButton id="breed-dropdown" title={selectedBreeds.length ? selectedBreeds.join(", ") : "Select Breeds"} >
-				<div className="breed-menu">
-					{breeds.map((breed) => (
-						<Dropdown.Item
-							key={breed}
-							className={selectedBreeds.includes(breed) ? "selected" : ""}
-							onClick={() => handleBreedSelect(breed)}
-						>
-							{breed}
-						</Dropdown.Item>
-					))}
-				</div>
-			</DropdownButton>
-			{selectedBreeds.length != 1 && 
-				<Button variant='secondary' onClick={toggleOrder}>
-					Sort by breed { sortAsc ? "ascending" : "descending"}
-				</Button>
-			}
-			{dogLoading && 
-				<p className={'text-center'}>
-					Loading dogs...
-				</p>
-			}
-			{!resultIds &&
-				<p className={'text-center'}>
-					No results.
-				</p>
-			}
-			{dogObjects && 
-				<div className="container-fluid middle-container">
-				<div className="row">
-				<DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
-					<StrictModeDroppable droppableId="dogDrop" direction="vertical"
-						 renderClone={(provided, snapshot, rubric) => (
-							<div
-							{...provided.draggableProps}
-							{...provided.dragHandleProps}
-							ref={provided.innerRef}
-							>		
-								<Card className={`dragging-dog ${dragging && 'isDragging'}`}>
-									<Card.Body>
-										<Card.Img variant="top" src={dogObjects[rubric.source.index].img} />
-										<Card.ImgOverlay>
-											<Card.Text>{dogCities[dogObjects[rubric.source.index].id] ?? `Zip Code: ${dogObjects[rubric.source.index].zip_code}`}</Card.Text>
-										</Card.ImgOverlay>
-										<Card.Title>{dogObjects[rubric.source.index].name}</Card.Title>
-										<Card.Subtitle className="mb-2 text-muted">Age {dogObjects[rubric.source.index].age}</Card.Subtitle>
-										<Card.Text>{dogObjects[rubric.source.index].breed}</Card.Text>
-									</Card.Body>
-								</Card>
+	<>
+		<DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
+			<div className="sticky-top sticky-bottom mb-4">
+				<ButtonGroup className="text-center mt-1 me-2 mb-4">
+					<BreedDropdownComponent
+						breeds={breeds}
+						selectedBreeds={selectedBreeds}
+						handleBreedSelect={handleBreedSelect}
+					/>
+					{selectedBreeds.length != 1 && 
+						<Button variant='secondary' onClick={toggleOrder} className='breed-sort'>
+							Sort: Breed { sortAsc ? "↓" : "↑"}
+						</Button>
+					}
+				</ButtonGroup>
+			</div>
+			<Container fluid>
+				<Row>
+				<Col xs={8} sm={9} md={10} className="scrolling-column">
+				{dogLoading && 
+						<p className={'text-center'}>
+							Loading dogs...
+						</p>
+					}
+					{!resultIds &&
+						<p className={'text-center'}>
+							No results.
+						</p>
+					}
+					{dogObjects &&
+						<StrictModeDroppable droppableId="dogDrop" direction="vertical">
+							{(provided, snapshot) => (
+								<Row
+								className="justify-content-center"
+								ref={provided.innerRef}
+								{...provided.droppableProps}
+								>
+									{dogObjects.map((dogObject, index) => (
+										<Draggable key={dogObject.id} draggableId={dogObject.id} index={index}>
+										{(provided, snapshot) => (
+											<Col
+												xs={12} md={6} lg={3}
+												className='dogObject'
+												ref={provided.innerRef}
+												{...provided.draggableProps}
+												{...provided.dragHandleProps}
+											>
+												<DogComponent dogObject={dogObject} city={dogCities[dogObject.id]} size="large" />
+											</Col>
+										)}
+										</Draggable>
+									))}
+									{provided.placeholder}
+								</Row>
+							)}
+						</StrictModeDroppable>
+					}
+				</Col>
+				<Col xs={4} sm={3} md={2}>
+					<div className="sticky-top sticky-bottom right-side-container">
+						<h6 className="right-side-title ms-2"> Favorite Dogs: </h6>
+						{favDogObjects.length < 1 &&
+							<div className='mt-4 ms-1 me-3'>
+								<h5>
+									No favorite dogs yet.
+								</h5>
+								<p>
+									Drag dogs you might want to adopt over here to start building your list of favorites.
+								</p>
 							</div>
-						)}
-					>
-					{(provided, snapshot) => (
-						<Row
-						className="justify-content-center"
-						ref={provided.innerRef}
-						{...provided.droppableProps}
-						>
-						{dogObjects.map((dogObject, index) => (
-							<Draggable key={dogObject.id} draggableId={dogObject.id} index={index}>
-							{(provided, snapshot) => (
-								<Col
-									xs={12}
-									className='dogObject'
+						}
+						<div className='right-side-scroller'>
+							<StrictModeDroppable droppableId="favDrop" direction="vertical">
+								{(provided, snapshot) => (
+									<div
+									className='right-side-droppable'
 									ref={provided.innerRef}
-									{...provided.draggableProps}
-									{...provided.dragHandleProps}
-								>
-								<Card className='mb-4'>
-									<Card.Body>
-										<Card.Img variant="top" src={dogObject.img} />
-										<Card.ImgOverlay>
-											<Card.Text>{dogCities[dogObject.id] ?? `Zip Code: ${dogObject.zip_code}`}</Card.Text>
-										</Card.ImgOverlay>
-										<Card.Title>{dogObject.name}</Card.Title>
-										<Card.Subtitle className="mb-2 text-muted">Age {dogObject.age}</Card.Subtitle>
-										<Card.Text>{dogObject.breed}</Card.Text>
-									</Card.Body>
-								</Card>
-								</Col>
-							)}
-							</Draggable>
-						))}
-						{provided.placeholder}
-						</Row>
-					)}
-					</StrictModeDroppable>
-					<div className={`right-side-container ${dragging && 'dragging'}`}>
-					<StrictModeDroppable droppableId="favDrop" direction="vertical">
-					{(provided, snapshot) => (
-						<div
-						className='right-side-droppable'
-						ref={provided.innerRef}
-						{...provided.droppableProps}
-						>
-						{favDogObjects.map((dogObject, index) => (
-							<Draggable key={dogObject.id} draggableId={dogObject.id} index={index}>
-							{(provided, snapshot) => (
-								<div
-									className='dogObject'
-									ref={provided.innerRef}
-									{...provided.draggableProps}
-									{...provided.dragHandleProps}
-								>
-								<Card className='mb-4'>
-									<Card.Body>
-										<Card.Img variant="top" src={dogObject.img} />
-										<Card.ImgOverlay>
-											<Card.Text>{dogCities[dogObject.id] ?? `Zip Code: ${dogObject.zip_code}`}</Card.Text>
-										</Card.ImgOverlay>
-										<Card.Title>{dogObject.name}</Card.Title>
-										<Card.Subtitle className="mb-2 text-muted">Age {dogObject.age}</Card.Subtitle>
-										<Card.Text>{dogObject.breed}</Card.Text>
-									</Card.Body>
-								</Card>
-								</div>
-							)}
-							</Draggable>
-						))}
-						{provided.placeholder}
+									{...provided.droppableProps}
+									>
+									{favDogObjects.map((dogObject, index) => (
+										<Draggable key={dogObject.id} draggableId={dogObject.id} index={index}>
+										{(provided, snapshot) => (
+											<div
+												className='dogObject'
+												ref={provided.innerRef}
+												{...provided.draggableProps}
+												{...provided.dragHandleProps}
+											>
+												<DogComponent dogObject={dogObject} city={dogCities[dogObject.id]} size="small" />
+											</div>
+										)}
+										</Draggable>
+									))}
+									{provided.placeholder}
+									</div>
+								)}
+								</StrictModeDroppable>
+							</div>
 						</div>
-					)}
-					</StrictModeDroppable>
-					</div>
-				</DragDropContext>
-				</div>
-				</div>
-			}
-			<ButtonGroup className="text-center mt-3">
+					</Col>
+				</Row>
+			</Container>
+	  </DragDropContext>
+
+
+      {/* Sticky footer */}
+      <div className='sticky-bottom'>
+        <Container fluid>
+		<ButtonGroup className="text-center mt-3">
 				<Button onClick={handlePrev} disabled={!prevUrl || page == 0}>Prev</Button>
 				<Button variant='secondary' disabled> {25*page} - {25*page + dogObjects.length} of {total} </Button>
 				<Button onClick={handleNext} disabled={!nextUrl || page == Math.ceil(total/25) - 1}>Next</Button>
@@ -364,7 +347,10 @@ function BrowseComponent() {
 			<p className={'text-center'}>
 				{`Page ${page + 1} of ${Math.ceil(total/25)}`}
 			</p>
-		</Row>
+        </Container>
+      </div>
+	  </>
+    
 	)
 	
 }
