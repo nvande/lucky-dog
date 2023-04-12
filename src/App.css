@@ -14,7 +14,7 @@ html, body {
   height: 100%;
 }
 
-body {	
+body {
 	background-size: 100%;
 	background-repeat: no-repeat;
 }
@@ -92,12 +92,11 @@ a.page-title-link {
 }
 
 .doggo-wrap.doggo-home {
-  position: relative;
+  position: absolute;
   display: block;
   width: 100vw!important;
   height: 100vh!important;
-  bottom: 139px;
-  margin-bottom: -50vh;
+  bottom: -40px;
   right: -40px;
   overflow: hidden;
   max-width: 40vw;
@@ -138,6 +137,17 @@ a.page-title-link {
   pointer-events: none;
 }
 
+.ldbutton, .ldbutton:disabled {
+  position: relative;
+  transition: all .1s;
+  border: 1px solid #fff;
+}
+
+.ldbutton.btn-secondary {
+  border: 1px solid #fff;
+  background: rgba(0,0,0,.75);
+}
+
 .ldbutton, #breed-dropdown, .breed-sort {
   background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
   border: 1px solid #eee;
@@ -147,6 +157,7 @@ a.page-title-link {
 
 .ldbutton:hover {
   border: 1px solid #fff;
+  transform: scale(1.1);
 }
 
 .page-title:after, .ldbutton:after {
@@ -249,14 +260,9 @@ a.page-title-link {
   border-radius: 5px 0 0 5px;
 }
 
-#breed-dropdown {
-  min-width: 300px;
-  overflow-x: scroll;
-  max-width: calc(100vw - 500px);
-}
-
 #breed-dropdown, .breed-sort {
   height: 38px;
+  overflow-x: scroll;
   white-space: nowrap;
 }
 
@@ -266,7 +272,6 @@ a.page-title-link {
 
 .breed-menu {
   max-height: 300px;
-  min-width: 300px;
   width: 100%;
   overflow-y: scroll;
 }
@@ -280,6 +285,7 @@ a.page-title-link {
   overflow-y: hidden;
   overflow-x: scroll;
   font-size: 14px;
+  max-width: 120px;
 }
 
 .card {
@@ -466,8 +472,8 @@ a.page-title-link {
 .footer {
   height: 40px;
   font-size: 10px;
-  max-width: 40%;
-  margin-left: 30%;
+  max-width: 30%;
+  margin-left: 35%;
 }
 
 @media (max-width: 1250px) {
@@ -475,6 +481,14 @@ a.page-title-link {
     position: relative;
     left: -10px;
     font-size: 12px;
+  }
+
+  .breed-sort span {
+    display: none;
+  }
+
+  .breed-sort {
+    max-width: 40px;
   }
 
   .side-title {
@@ -492,12 +506,6 @@ a.page-title-link {
   }
 }
 
-@media (max-width: 1440) {
-  #breed-dropdown {
-    min-width: 250px;
-  }
-}
-
 @media (max-width: 992px) {
   .page-title {
     float: left;
@@ -510,16 +518,24 @@ a.page-title-link {
   .logout-button span {
     display: none;
   }
-  #breed-dropdown {
-    min-width: 200px;
-  }
   #breed-dropdown, .breed-sort {
     font-size: 12px;
     line-height: 16px;
   }
   .doggo-div {
-    right: 20px;
+    right: -20px;
     top: 40px;
+  }
+  .doggo-shape {
+    right: -40px;
+  }
+  .right-side-title {
+    margin-top: 15px;
+    margin-bottom: -5px;
+  }
+  .footer {
+    max-width: none;
+    margin: 0 auto;
   }
 }
 
@@ -536,9 +552,7 @@ a.page-title-link {
     display: none;
   }
   #breed-dropdown, .breed-sort {
-    font-size: 8px;
-    min-width: 0;
-    max-width: 33vw;
+    font-size: 10px;
   }
 }
 

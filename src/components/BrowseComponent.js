@@ -4,6 +4,7 @@ import { FaHeart } from 'react-icons/fa';
 
 import { DragDropContext, Draggable } from 'react-beautiful-dnd';
 import StrictModeDroppable from './dnd/StrictModeDroppable.js';
+import useBreakpoint from '../utility/UseBreakpoint.js';
 
 import { search, getBreeds } from '../utility/SearchUtility.js';
 import { dogInfo, getCityByZip } from '../utility/DogObjectUtility.js';
@@ -32,6 +33,8 @@ function BrowseComponent() {
 	const [loading, setLoading] = useState(true);
 	const [dogLoading, setDogLoading] = useState(false);
 	const [error, setError] = useState(null);
+
+	const size = useBreakpoint();
 
 	useEffect(() => {
 		fetchBreeds();
@@ -240,10 +243,11 @@ function BrowseComponent() {
 						breeds={breeds}
 						selectedBreeds={selectedBreeds}
 						handleBreedSelect={handleBreedSelect}
+						size={size}
 					/>
 					{selectedBreeds.length != 1 && 
 						<Button variant='secondary' onClick={toggleOrder} className='breed-sort'>
-							{selectedBreeds.join(',').length < 64 ? `Sort: Breed ` : ''} { sortAsc ? "↓" : "↑"}
+							<span>{selectedBreeds.join(',').length < 64 ? `Sort: Breed ` : ''}</span> { sortAsc ? "↓" : "↑"}
 						</Button>
 					}
 				</ButtonGroup>
@@ -340,10 +344,10 @@ function BrowseComponent() {
       {/* Sticky footer */}
       <div className='sticky-bottom'>
         <Container fluid>
-		<ButtonGroup className="text-center mt-3">
-				<Button onClick={handlePrev} disabled={!prevUrl || page == 0}>Prev</Button>
-				<Button variant='secondary' disabled> {25*page} - {25*page + dogObjects.length} of {total} </Button>
-				<Button onClick={handleNext} disabled={!nextUrl || page == Math.ceil(total/25) - 1}>Next</Button>
+			<ButtonGroup className="text-center mt-3">
+				<Button className="ldbutton" onClick={handlePrev} disabled={!prevUrl || page == 0}>Prev</Button>
+				<Button className="ldbutton" variant='secondary' disabled> {25*page} - {25*page + dogObjects.length} of {total} </Button>
+				<Button className="ldbutton" onClick={handleNext} disabled={!nextUrl || page == Math.ceil(total/25) - 1}>Next</Button>
 			</ButtonGroup>
 			<p className={'text-center'}>
 				{`Page ${page + 1} of ${Math.ceil(total/25)}`}

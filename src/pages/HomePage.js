@@ -9,9 +9,9 @@ function HomePage() {
             <div className="mt-5">
                 <Container>
                     <Row>
-                        <Col xs={8}>
+                        <Col xs={12} md={8}>
                         <h1 className='mx-5 main-text standout-text'>
-                            Your newest, bestest friend may already be waiting!
+                            Your newest, <b>bestest</b> friend may already be waiting!
                         </h1>
                         <h3 className='standout-text fw-light'>
                             Adoption not only gives a deserving animal a loving home,
