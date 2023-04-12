@@ -226,7 +226,7 @@ function BrowseComponent() {
 	  
 
 	if (loading) {
-	    return <SpinnerBit/>
+	    return <SpinnerBit  className={'fs-1 mt-5'}/>
 	}
 
 	return (

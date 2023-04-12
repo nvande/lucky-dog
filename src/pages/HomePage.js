@@ -10,6 +10,9 @@ function HomePage() {
                 <Container>
                     <Row>
                         <Col xs={12} md={8}>
+                            <div className="d-md-none w-50 float-end">
+                                <DoggoBit/>
+                            </div>
                             <h1 className='mx-5 main-text standout-text'>
                                 Your newest, <b>bestest</b> friend may already be waiting for you!
                             </h1>
@@ -25,7 +28,7 @@ function HomePage() {
                             </Link>
                         </Col>
                         <Col xs={12} md={4}>
-                            <div className="d-sm-none d-md-block doggo-col">
+                            <div className="d-none d-md-block doggo-col">
                                 <DoggoBit isHomepage={true}/>
                             </div>
                         </Col>

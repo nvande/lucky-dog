@@ -14,7 +14,9 @@ function DogComponent({ dogObject, city, size }) {
                         {city ? 
                             <Card.Text>{city}</Card.Text>
                             :
-                            <SpinnerBit className="text-white"/>
+                            <>
+                                <Card.Text>{dogObject.zip_code}<SpinnerBit className="text-white ms-1"/></Card.Text>
+                            </>
                         }
                     </Card.ImgOverlay>
                     <Card.Title>{dogObject.name}</Card.Title>
@@ -30,7 +32,13 @@ function DogComponent({ dogObject, city, size }) {
         <div className="side-img-wrap">
             <Card.Img variant='top' src={dogObject.img} />
             <div className="side-info">
-            <Card.Text className='side-header'>{city}</Card.Text>
+            {city ? 
+                <Card.Text>{city}</Card.Text>
+                :
+                <>
+                    <Card.Text>{dogObject.zip_code}<SpinnerBit className="text-white ms-1"/></Card.Text>
+                </>
+            }
             <Card.Title className='side-title'>{dogObject.name}</Card.Title>
             <Card.Subtitle className='mb-2 side-subtitle'>
                 Age {dogObject.age}
