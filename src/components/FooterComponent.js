@@ -1,7 +1,8 @@
-function FooterComponent(props){
+function FooterComponent({footer, attributes}){
 	return (
-		<div className={'text-center mt-5 mb-5 text-muted'}>
-			<small>{props.footer}</small>
+		<div className={'text-center mt-5 mb-1 text-muted footer'}>
+			<small>{footer}</small><br/>
+			<small>{attributes}</small>
 		</div>
 	);
 }

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Button, ButtonGroup, Row, DropdownButton, Dropdown, Card, Container, Col } from 'react-bootstrap';
+import { Container, Row, Col, Button, ButtonGroup } from 'react-bootstrap';
+import { FaHeart } from 'react-icons/fa';
 
 import { DragDropContext, Draggable } from 'react-beautiful-dnd';
 import StrictModeDroppable from './dnd/StrictModeDroppable.js';
@@ -233,8 +234,8 @@ function BrowseComponent() {
 	return (
 	<>
 		<DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
-			<div className="sticky-top sticky-bottom mb-4">
-				<ButtonGroup className="text-center mt-2 me-2 mb-4">
+			<div className="breed-button-wrapper sticky-top sticky-bottom mb-4">
+				<ButtonGroup className="text-center mt-2 pt-3 mb-4 breed-button-group">
 					<BreedDropdownComponent
 						breeds={breeds}
 						selectedBreeds={selectedBreeds}
@@ -242,7 +243,7 @@ function BrowseComponent() {
 					/>
 					{selectedBreeds.length != 1 && 
 						<Button variant='secondary' onClick={toggleOrder} className='breed-sort'>
-							Sort: Breed { sortAsc ? "↓" : "↑"}
+							{selectedBreeds.join(',').length < 64 ? `Sort: Breed ` : ''} { sortAsc ? "↓" : "↑"}
 						</Button>
 					}
 				</ButtonGroup>
@@ -291,12 +292,12 @@ function BrowseComponent() {
 				</Col>
 				<Col xs={4} sm={3} md={2}>
 					<div className="sticky-top sticky-bottom right-side-container">
-						<h6 className="right-side-title ms-2"> Favorite Dogs: </h6>
+						<h6 className="right-side-title ms-2"><FaHeart className='inline-icon' /> Favorite Dogs: </h6>
 						{favDogObjects.length < 1 &&
-							<div className='mt-4 ms-1 me-3'>
-								<h5>
+							<div className='mt-4 ms-1 me-3 right-side-empty'>
+								<h6>
 									No favorite dogs yet.
-								</h5>
+								</h6>
 								<p>
 									Drag dogs you might want to adopt over here to start building your list of favorites.
 								</p>
