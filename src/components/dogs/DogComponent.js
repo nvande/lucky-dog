@@ -1,4 +1,5 @@
 import { Card } from 'react-bootstrap';
+import SpinnerBit from '../bits/SpinnerBit';
 
 function DogComponent({ dogObject, city, size }) {
   const isLarge = size === 'large';
@@ -10,7 +11,11 @@ function DogComponent({ dogObject, city, size }) {
                     <div className='dog-img-placeholder' />
                     <Card.Img  src={dogObject.img} />
                     <Card.ImgOverlay>
-                        <Card.Text>{city}</Card.Text>
+                        {city ? 
+                            <Card.Text>{city}</Card.Text>
+                            :
+                            <SpinnerBit className="text-white"/>
+                        }
                     </Card.ImgOverlay>
                     <Card.Title>{dogObject.name}</Card.Title>
                     <Card.Subtitle className="mb-2 text-muted">Age {dogObject.age}</Card.Subtitle>

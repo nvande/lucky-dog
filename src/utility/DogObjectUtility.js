@@ -48,7 +48,7 @@ const dogInfo = async (dogIds) => {
     const data = await response.json();
 
     return data.status == "OK" ? // if bad request,
-        data.results[0].formatted_address : null; // just return null and frontend will display only zip
+        data.results[0].formatted_address : `Zip: ${zip}`; // if not found just throw the zip back
   }
 
   export { dogInfo, getCityByZip };

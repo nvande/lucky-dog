@@ -11,7 +11,12 @@ import {
   Route,
 } from "react-router-dom";
 
+import { useState } from 'react';
+
 function App() {
+
+  const [user, setUser] = useState(null);
+
   return (
     <div className="App">
       <Router>

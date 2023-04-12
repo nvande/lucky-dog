@@ -10,6 +10,7 @@ import { search, getBreeds } from '../utility/SearchUtility.js';
 import { dogInfo, getCityByZip } from '../utility/DogObjectUtility.js';
 import DogComponent from './dogs/DogComponent.js';
 import BreedDropdownComponent from './dogs/BreedDropdownComponent.js';
+import SpinnerBit from './bits/SpinnerBit.js';
 
 function BrowseComponent() {
 	const [breeds, setBreeds] = useState([]);
@@ -55,16 +56,10 @@ function BrowseComponent() {
 	const fetchCities = async () => {
 		const newCities = {};
 		for (const dogObject of dogObjects) {
-		  console.log(dogObject.zip_code)
 		  const city = await getCityByZip(dogObject.zip_code);
-		  console.log(city);
 		  newCities[dogObject.id] = city;
 		}
-		
-		console.log(newCities);
-
 		setDogCities(newCities);
-		console.log(dogCities);
 	};
 
 	const fetchBreeds = async() => {
@@ -231,7 +226,7 @@ function BrowseComponent() {
 	  
 
 	if (loading) {
-	    return <div>Loading...</div>
+	    return <SpinnerBit/>
 	}
 
 	return (
@@ -257,7 +252,7 @@ function BrowseComponent() {
 				<Col xs={8} sm={9} md={10} className="scrolling-column">
 				{dogLoading && 
 						<p className={'text-center'}>
-							Loading dogs...
+							<SpinnerBit className={'fs-1 mt-5'}/>
 						</p>
 					}
 					{!resultIds &&
@@ -277,7 +272,7 @@ function BrowseComponent() {
 										<Draggable key={dogObject.id} draggableId={dogObject.id} index={index}>
 										{(provided, snapshot) => (
 											<Col
-												xs={12} md={6} lg={3}
+												xs={6} md={4} lg={3}
 												className='dogObject'
 												ref={provided.innerRef}
 												{...provided.draggableProps}
@@ -339,9 +334,6 @@ function BrowseComponent() {
 				</Row>
 			</Container>
 	  </DragDropContext>
-
-
-      {/* Sticky footer */}
       <div className='sticky-bottom'>
         <Container fluid>
 			<ButtonGroup className="text-center mt-3">
@@ -349,13 +341,12 @@ function BrowseComponent() {
 				<Button className="ldbutton" variant='secondary' disabled> {25*page} - {25*page + dogObjects.length} of {total} </Button>
 				<Button className="ldbutton" onClick={handleNext} disabled={!nextUrl || page == Math.ceil(total/25) - 1}>Next</Button>
 			</ButtonGroup>
-			<p className={'text-center'}>
-				{`Page ${page + 1} of ${Math.ceil(total/25)}`}
+			<p className={'text-center page-count'}>
+				<span>{`Page ${page + 1} of ${Math.ceil(total/25)}`}</span>
 			</p>
         </Container>
       </div>
-	  </>
-    
+	</>
 	)
 	
 }

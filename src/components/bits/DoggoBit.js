@@ -24,20 +24,22 @@ const images = [
 const DoggoBit = ({isHomepage = false}) => {
   const [randomShape, setRandomShape] = useState(null);
   const [randomImage, setRandomImage] = useState(null);
+  const [randomAngle, setRandomAngle] = useState(0);
 
   useEffect(() => {
     setRandomShape(shapes[Math.floor(Math.random() * shapes.length)]);
     setRandomImage(images[Math.floor(Math.random() * images.length)]);
+    setRandomAngle(Math.floor(Math.random * 360));
   }, []);
 
   return (
-    <div className={`d-flex align-items-center justify-content-center doggo-wrap ${isHomepage ? 'doggo-home' : ''}`}>
+    <div className={`d-flex align-items-center doggo-wrap ${isHomepage ? 'doggo-home sticky-bottom' : ''}`}>
           {randomImage && (
             <div className="position-relative d-inline-block doggo-div">
             {randomShape && (
                 <img src={randomShape} alt="Random" className="img-fluid doggo-shape" />
               )}
-              <img src={randomImage} alt="Random" className="img-fluid doggo-img" />
+              <img src={randomImage} alt="Random" className="img-fluid doggo-img" style={{transform: `rotate(${randomAngle}deg)`}}/>
             </div>
           )}
     </div>

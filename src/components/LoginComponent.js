@@ -1,13 +1,15 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Container, Row, Col, Button, Form, Alert, InputGroup } from 'react-bootstrap';
 import { Navigate } from 'react-router-dom';
 
 import { login } from '../utility/LoginUtility.js';
 
 import constraints from '../validate/validate.js';
+import Cookies from 'universal-cookie';
 
 export default function LoginComponent() {
     const validate = require("validate.js");
+	const cookies = new Cookies();
 
 	const [name, setName] = useState({
 		first: '',
@@ -20,6 +22,12 @@ export default function LoginComponent() {
 	const [success, setSuccess] = useState(false);
     const [loading, setLoading] = useState(false);
 	const [redirect, setRedirect] = useState(null);
+
+	useEffect(() => {
+		if(cookies.get('user')) {
+			setRedirect('/browse');
+		}
+	}, []);
 
     const validateFields = () => {
     	let errors = validate({
@@ -62,6 +70,8 @@ export default function LoginComponent() {
         try {
             await login( name, email ).then((success) => {
                 if(success) {
+					cookies.set('name', name, { path: '/' });
+					cookies.set('user', email, { path: '/' });
                     setRedirect('/browse');
                 }
             });

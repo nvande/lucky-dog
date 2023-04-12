@@ -10,22 +10,24 @@ function HomePage() {
                 <Container>
                     <Row>
                         <Col xs={12} md={8}>
-                        <h1 className='mx-5 main-text standout-text'>
-                            Your newest, <b>bestest</b> friend may already be waiting for you!
-                        </h1>
-                        <h3 className='standout-text fw-light'>
-                            Adoption not only gives a deserving animal a loving home,
-                            it also combats pet overpopulation and promotes a more humane society.
-                        </h3>
-                        <h2 className='mx-5 mt-5 fw-bold'>
-                            Save a life, adopt a dog.
-                        </h2>
-                        <Link to="login">
-                            <Button className='mt-5 mb-2 ldbutton'> Find your Lucky Dog </Button>
-                        </Link>
+                            <h1 className='mx-5 main-text standout-text'>
+                                Your newest, <b>bestest</b> friend may already be waiting for you!
+                            </h1>
+                            <h3 className='standout-text fw-light'>
+                                Adoption not only gives a deserving animal a loving home,
+                                it also combats pet overpopulation and promotes a more humane society.
+                            </h3>
+                            <h2 className='mx-5 mt-5 fw-bold'>
+                                Save a life. Adopt a dog.
+                            </h2>
+                            <Link to="login">
+                                <Button className='mt-5 mb-2 ldbutton'> Find your Lucky Dog </Button>
+                            </Link>
                         </Col>
-                        <Col xs={4} className='d-sm-none d-md-block'>
-                            <DoggoBit isHomepage={true}/>
+                        <Col xs={12} md={4}>
+                            <div className="d-sm-none d-md-block doggo-col">
+                                <DoggoBit isHomepage={true}/>
+                            </div>
                         </Col>
                     </Row>
                 </Container>

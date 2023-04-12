@@ -1,8 +1,8 @@
 import { FaSpinner } from "react-icons/fa";
 
-function SpinnerBit() {
+function SpinnerBit({className}) {
     return (
-        <FaSpinner className="loading-spinner"/>
+        <FaSpinner className={`loading-spinner ${className}`}/>
     );
 }
 
