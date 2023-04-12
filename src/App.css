@@ -73,6 +73,11 @@ a.page-title-link {
   z-index: 1000;
   overflow: hidden;
   padding-bottom: 10px;
+  transition: all .1s;
+}
+
+.page-title:hover {
+  transform: scale(1.1);
 }
 
 .page-title span {

@@ -2,7 +2,7 @@ import HeaderComponent from './HeaderComponent.js';
 import FooterComponent from './FooterComponent.js';
 
 const footer = "This website is for demonstration purposes only.";
-const attributes = "Dog images provided by Chatra Ardhisuryo on Vecteezy.com and additional images by Rawpixel.com."
+const attributes = "Dog images provided by Chatra Ardhisuryo on Vecteezy.com and by Rawpixel.com."
 
 function PageComponent(props) {
   return (

@@ -11,7 +11,7 @@ function HomePage() {
                     <Row>
                         <Col xs={12} md={8}>
                         <h1 className='mx-5 main-text standout-text'>
-                            Your newest, <b>bestest</b> friend may already be waiting!
+                            Your newest, <b>bestest</b> friend may already be waiting for you!
                         </h1>
                         <h3 className='standout-text fw-light'>
                             Adoption not only gives a deserving animal a loving home,
@@ -24,7 +24,7 @@ function HomePage() {
                             <Button className='mt-5 mb-2 ldbutton'> Find your Lucky Dog </Button>
                         </Link>
                         </Col>
-                        <Col xs={4}>
+                        <Col xs={4} className='d-sm-none d-md-block'>
                             <DoggoBit isHomepage={true}/>
                         </Col>
                     </Row>
