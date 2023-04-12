@@ -1,4 +1,5 @@
 import './App.css';
+import './fonts/Pacifico-Regular.ttf';
 
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';

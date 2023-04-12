@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Button, ButtonGroup, Row, DropdownButton, Dropdown, Card, Container, Col } from 'react-bootstrap';
+import { Container, Row, Col, Button, ButtonGroup } from 'react-bootstrap';
+import { FaHeart } from 'react-icons/fa';
 
 import { DragDropContext, Draggable } from 'react-beautiful-dnd';
 import StrictModeDroppable from './dnd/StrictModeDroppable.js';
+import useBreakpoint from '../utility/UseBreakpoint.js';
 
 import { search, getBreeds } from '../utility/SearchUtility.js';
 import { dogInfo, getCityByZip } from '../utility/DogObjectUtility.js';
@@ -31,6 +33,8 @@ function BrowseComponent() {
 	const [loading, setLoading] = useState(true);
 	const [dogLoading, setDogLoading] = useState(false);
 	const [error, setError] = useState(null);
+
+	const size = useBreakpoint();
 
 	useEffect(() => {
 		fetchBreeds();
@@ -233,16 +237,17 @@ function BrowseComponent() {
 	return (
 	<>
 		<DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
-			<div className="sticky-top sticky-bottom mb-4">
-				<ButtonGroup className="text-center mt-1 me-2 mb-4">
+			<div className="breed-button-wrapper sticky-top sticky-bottom mb-4">
+				<ButtonGroup className="text-center mt-2 pt-3 mb-4 breed-button-group">
 					<BreedDropdownComponent
 						breeds={breeds}
 						selectedBreeds={selectedBreeds}
 						handleBreedSelect={handleBreedSelect}
+						size={size}
 					/>
 					{selectedBreeds.length != 1 && 
 						<Button variant='secondary' onClick={toggleOrder} className='breed-sort'>
-							Sort: Breed { sortAsc ? "↓" : "↑"}
+							<span>{selectedBreeds.join(',').length < 64 ? `Sort: Breed ` : ''}</span> { sortAsc ? "↓" : "↑"}
 						</Button>
 					}
 				</ButtonGroup>
@@ -291,18 +296,18 @@ function BrowseComponent() {
 				</Col>
 				<Col xs={4} sm={3} md={2}>
 					<div className="sticky-top sticky-bottom right-side-container">
-						<h6 className="right-side-title ms-2"> Favorite Dogs: </h6>
+						<h6 className="right-side-title ms-2"><FaHeart className='inline-icon' /> Favorite Dogs: </h6>
 						{favDogObjects.length < 1 &&
-							<div className='mt-4 ms-1 me-3'>
-								<h5>
+							<div className='mt-4 ms-1 me-3 right-side-empty'>
+								<h6>
 									No favorite dogs yet.
-								</h5>
+								</h6>
 								<p>
 									Drag dogs you might want to adopt over here to start building your list of favorites.
 								</p>
 							</div>
 						}
-						<div className='right-side-scroller'>
+						<div className='right-side-scroller sticky-top'>
 							<StrictModeDroppable droppableId="favDrop" direction="vertical">
 								{(provided, snapshot) => (
 									<div
@@ -339,10 +344,10 @@ function BrowseComponent() {
       {/* Sticky footer */}
       <div className='sticky-bottom'>
         <Container fluid>
-		<ButtonGroup className="text-center mt-3">
-				<Button onClick={handlePrev} disabled={!prevUrl || page == 0}>Prev</Button>
-				<Button variant='secondary' disabled> {25*page} - {25*page + dogObjects.length} of {total} </Button>
-				<Button onClick={handleNext} disabled={!nextUrl || page == Math.ceil(total/25) - 1}>Next</Button>
+			<ButtonGroup className="text-center mt-3">
+				<Button className="ldbutton" onClick={handlePrev} disabled={!prevUrl || page == 0}>Prev</Button>
+				<Button className="ldbutton" variant='secondary' disabled> {25*page} - {25*page + dogObjects.length} of {total} </Button>
+				<Button className="ldbutton" onClick={handleNext} disabled={!nextUrl || page == Math.ceil(total/25) - 1}>Next</Button>
 			</ButtonGroup>
 			<p className={'text-center'}>
 				{`Page ${page + 1} of ${Math.ceil(total/25)}`}

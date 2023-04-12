@@ -170,8 +170,8 @@ export default function LoginComponent() {
 						</Col>
 					</Row>
                     <div className={'text-center mt-4'}>
-                        <Button className={'px-5'} variant="flat" onClick={postLogin}>
-                            { loading ? "Loading..." : "Let's Go!" }
+                        <Button className={'px-5 ldbutton'} onClick={postLogin}>
+                            { loading ? "Loading..." : "View Dogs" }
                         </Button>
                     </div>
                 </Container>

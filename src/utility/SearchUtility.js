@@ -23,7 +23,7 @@ const search = async (url, breeds, asc=true) => {
     } else {
       url += "?sort=breed:"+(asc ? "asc" : "desc");
     }
-    url += "&size=24"
+    url += "&size=36"
   }
 
   try {

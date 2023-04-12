@@ -1,17 +1,33 @@
 import React, { useState } from "react";
 import { Dropdown, DropdownButton, Form } from "react-bootstrap";
 
-const BreedDropdownComponent = ({ breeds, selectedBreeds, handleBreedSelect }) => {
+const BreedDropdownComponent = ({ breeds, selectedBreeds, handleBreedSelect, size }) => {
   const [search, setSearch] = useState("");
 
   const filteredBreeds = breeds.filter((breed) =>
     breed.toLowerCase().includes(search.toLowerCase())
   );
 
+  let limit = 72;
+  switch (size) {
+    case 'md':
+      limit = 64
+    case 'sm':
+      limit = 56;
+    case 'xs':
+      limit = 48;
+  }
+  const small = ( size == 'xs' || size == 'sm') || selectedBreeds.join(',').length > limit;
+
+  let title = (selectedBreeds.length) ? selectedBreeds.join(", ") : "Select Breeds";
+  if( small && selectedBreeds.length ) {
+    title = `${selectedBreeds.length} Breeds Selected `
+  }
+
   return (
     <DropdownButton
       id="breed-dropdown"
-      title={selectedBreeds.length ? selectedBreeds.join(", ") : "Select Breeds"}
+      title={title}
     >
       <div className="breed-menu">
         <Form.Control

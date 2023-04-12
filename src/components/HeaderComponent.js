@@ -1,8 +1,10 @@
 import { useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { Button, Row, Col } from 'react-bootstrap';
 
 import { logout } from '../utility/LoginUtility';
+import LogoBit from './bits/LogoBit';
+import { FaSignOutAlt } from 'react-icons/fa';
 
 function HeaderComponent(){
 
@@ -20,16 +22,18 @@ function HeaderComponent(){
     }
 
 	return (
-		<div className={'px-md-3 px-lg-5 pt-3 pb-0 pb-md-2 text-muted text-center text-md-start pageHeader bg-info text-white clearfix'}>
-			<Row className='container'>
-				<Col sm="12" md="6">
-                    <h2 className='page-title' >
-                        lucky dog!
-                    </h2>
+		<div className={'px-md-1 px-lg-2 pt-2 pb-0 pb-md-2 text-muted sticky-top text-md-start pageHeader text-white clearfix'}>
+			<Row className='container header-container'>
+				<Col xs="6">
+                    <Link to="/" className='page-title-link'>
+                        <LogoBit/>
+                    </Link>
 				</Col>
-                <Col sm="12" md="6">
+                <Col xs="6">
                     <div className="d-inline">
-                        <Button className={"float-end mt-0 mt-md-0 mb-2"} variant="flat" onClick={clickLogout}>Log Out</Button>
+                        <Button className={"ldbutton logout-button float-end mt-0 mt-md-0 mb-2"} onClick={clickLogout}>
+                            <FaSignOutAlt className='me-1' /><span>Log Out</span>
+                        </Button>
                     </div>
                 </Col>
 			</Row>
