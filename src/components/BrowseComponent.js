@@ -307,7 +307,7 @@ function BrowseComponent() {
 								</p>
 							</div>
 						}
-						<div className='right-side-scroller'>
+						<div className='right-side-scroller sticky-top'>
 							<StrictModeDroppable droppableId="favDrop" direction="vertical">
 								{(provided, snapshot) => (
 									<div

@@ -436,8 +436,7 @@ a.page-title-link {
 
 .right-side-scroller {
   position: relative;
-  min-height: 30vh;
-  max-height: 100vh;
+  min-height: 50vh;
   overflow-y: scroll;
 }
 
@@ -454,7 +453,7 @@ a.page-title-link {
   position: relative;
   top:4px;
   margin-bottom: -4px;
-  max-height: calc(100% - 80px);
+  max-height: calc(100vh - 80px);
 }
 
 .right-side-droppable {
