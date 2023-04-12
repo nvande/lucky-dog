@@ -8,7 +8,7 @@ const BreedDropdownComponent = ({ breeds, selectedBreeds, handleBreedSelect, siz
     breed.toLowerCase().includes(search.toLowerCase())
   );
 
-  let limit = 72;
+  let limit = 68;
   switch (size) {
     case 'md':
       limit = 64

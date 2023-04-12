@@ -237,7 +237,7 @@ function BrowseComponent() {
 	return (
 	<>
 		<DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
-			<div className="breed-button-wrapper sticky-top sticky-bottom mb-4">
+			<div className="breed-button-wrapper sticky-top sticky-bottom">
 				<ButtonGroup className="text-center mt-2 pt-3 mb-4 breed-button-group">
 					<BreedDropdownComponent
 						breeds={breeds}
