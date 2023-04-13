@@ -10,7 +10,7 @@ function HomePage() {
                 <Container>
                     <Row>
                         <Col xs={12} md={8}>
-                            <div className="d-md-none w-50 float-end">
+                            <div className="d-md-none w-50 float-end small-home-doggo">
                                 <DoggoBit/>
                             </div>
                             <h1 className='mx-5 main-text standout-text'>

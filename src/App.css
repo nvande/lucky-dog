@@ -98,6 +98,12 @@ a.page-title-link {
   height: calc(100% + 400px);
 }
 
+.small-home-doggo {
+  position: relative;
+  right: -40px;
+  top: -20px;
+}
+
 .doggo-wrap.doggo-home {
   position: absolute;
   bottom: 0;
@@ -264,6 +270,18 @@ a.page-title-link {
   margin-left: 5px;
 }
 
+.drag-icon svg {
+  animation: wiggleIcon 1.5s 1;
+}
+
+.card:hover .drag-icon {
+  display: block;
+  cursor: move; /* fallback if grab cursor is unsupported */
+  cursor: grab;
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
+}
+
 .loading-spinner {
   animation: rotation 2s infinite linear;
 }
@@ -272,7 +290,7 @@ a.page-title-link {
   width: 50%;
   margin-left: 25%;
   margin-bottom: 40px;
-  margin-top: -35px;
+  margin-top: 10px;
 }
 
 .breed-button-group {
@@ -282,8 +300,26 @@ a.page-title-link {
   justify-content: center;
 }
 
+.filter-group {
+  position: relative;
+  top: 8px;
+  width: 50%;
+  margin-left: 25%;
+}
+
+.filter-group .form-control{
+  font-size: 12px;
+  border: 1px dashed #aaa;
+  height: 32px;
+}
+
 .dropdown:not(:last-child) #breed-dropdown {
   border-radius: 5px 0 0 5px;
+}
+
+.breed-button-group .dropdown-menu{
+  font-size: 12px;
+  z-index: 1000;
 }
 
 #breed-dropdown, .breed-sort {
@@ -411,16 +447,29 @@ a.page-title-link {
 
 .side-title {
   font-size: 26px;
-  margin: 2px 0 0 0;
+  margin: 0!important;
 }
 
 .side-subtitle {
   font-size: 18px;
-  margin-bottom: 10px;
+  margin: 0!important;
+}
+
+.side-info .card-text:not(.side-text) {
+  position: absolute;
+  padding: 2px 4px;
+  top: 4px;
+  font-size: 12px;
+  line-height: 15px;
 }
 
 .side-text {
   font-size: 12px;
+}
+
+.side-text:last-child {
+  position: absolute;
+  bottom: 5px;
 }
 
 .dogObject {
@@ -428,15 +477,16 @@ a.page-title-link {
   -ms-user-select: none; /* IE 10 and IE 11 */
   user-select: none; /* Standard syntax */
   transition: width .2s;
+  overflow: visible;
 }
 
-.dogObject .card:hover {
+.dogObject .card:not(.side-card):hover {
   transform: scale(1.05);
 }
 
 .dogObject .card-img-overlay .card-text {
   position: absolute;
-  padding: 6px 2px;
+  padding: 4px 10px 4px 10px;
   top: 0;
   color: white;
   font-weight: bold;
@@ -447,12 +497,78 @@ a.page-title-link {
   margin-left: -5px;
 }
 
+.dogObject .take-icon,
+.dogObject .drag-icon {
+  display: none;
+  text-align: center;
+  background-color: transparent;
+  font-size: calc(10px + 1vw);
+  color: #999;
+  border: dashed 1px #999;
+  border-radius: 50%;
+  width: calc(20px + 1vw);
+  height: calc(20px + 1vw);
+  padding: calc(2.5px + .5vw);
+  position: absolute;
+  right: 5px;
+  bottom: calc(50% - 10px - .5vw);
+  z-index: 9999;
+}
+
+.drag-icon {
+  border: none!important;
+}
+
+.dogObject .card:not(.side-card) .take-icon,
+.dogObject .card:not(.side-card) .drag-icon {
+  right: 20px;
+  bottom: calc(50% - 25px - .5vw);
+}
+
+.dogObject .card:not(.side-card) .drag-icon {
+  left: 20px;
+}
+
+.dogObject .take-icon svg,
+.dogObject .drag-icon svg {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.dogObject .card:hover .take-icon,
+.dogObject .card:hover .drag-icon {
+  display: block;
+}
+
+.dogObject .card.side-card .take-icon,
+.dogObject .card.side-card .drag-icon {
+  color: #fff;
+  border-color: #fff!important;
+  background-color: rgba(0,0,0,.75);
+  left: 5px;
+  bottom: 5px;
+}
+
+.dogObject .card.side-card .drag-icon {
+  left: auto;
+  right: 5px;
+}
+
+.dogObject .take-icon:hover, .dogObject .card.side-card .take-icon:hover {
+  border-color: #fff;
+  color: #fff;
+  background-color: #23a6d5;
+}
+
 .side-info .card-img-overlay .card-text {
   position: absolute;
   top: 0;
   color: white;
   font-weight: bold;
   line-height: 16px;
+  padding: 3px 4px;
   background: rgba(0,0,0,.5);
   text-shadow: 0 1px 5px #000;
   width: calc(100% + 10px);
@@ -482,6 +598,16 @@ a.page-title-link {
   align-items: center;
 }
 
+.left-side-scroller.dragging {
+  border: 1px dashed #23a6d5;
+  background-color: #dbf5ff;
+  width: calc(100% + 18px);
+  height: calc(100% + 18px);
+  margin-left: -9px;
+  margin-top: -9px;
+  padding: 8px;
+}
+
 .right-side-container {
   background-color: #fff;
   border-left: 1px solid #cecece;
@@ -508,8 +634,18 @@ a.page-title-link {
 
 .right-side-scroller {
   position: relative;
-  min-height: 50vh;
+  min-height: 25vh;
+  transition: min-height .2s;
   overflow-y: scroll;
+}
+
+.right-side-container.dragging {
+  border: 1px dashed #23a6d5;
+  background-color: #dbf5ff;
+}
+
+.right-side-container.dragging .right-side-scroller {
+  min-height: 50vh;
 }
 
 .right-side-container {
@@ -525,7 +661,7 @@ a.page-title-link {
   position: relative;
   top:4px;
   margin-bottom: -4px;
-  max-height: calc(100vh - 100px);
+  max-height: calc(100vh - 90px);
 }
 
 .right-side-droppable {
@@ -564,10 +700,14 @@ a.page-title-link {
 @media (max-width: 1250px) {
   .right-side-title {
     position: relative;
+    margin-top: 30px;
     left: -10px;
     font-size: 12px;
   }
-
+  .filter-group {
+    width: 40%;
+    margin-left: 30%;
+  }
   .breed-sort span {
     display: none;
   }
@@ -577,13 +717,11 @@ a.page-title-link {
   }
 
   .side-title {
-    font-size: 18px;
-    margin: -5px 0 0 0;
+    font-size: 14px;
   }
   
   .side-subtitle {
-    font-size: 12px;
-    margin-bottom: 8px;
+    font-size: 10px;
   }
   
   .side-text {
@@ -591,20 +729,22 @@ a.page-title-link {
   }
 }
 
-@media (max-width: 768px) {
-  .username span{
-    display: none;
-  }
-}
-
 @media (max-width: 992px) {
   .page-title {
     float: left;
+    width: 90px;
   }
   .page-title, .logout-button {
-    font-size: 18px;
+    font-size: 12px;
     line-height: 16px;
     height: 38px;
+  }
+  .page-title span {
+    position: absolute;
+    left: -3px;
+    font-size: 14px;
+    display: block;
+    width: 90px;
   }
   .username {
     line-height: 26px;
@@ -612,6 +752,15 @@ a.page-title-link {
   }
   .logout-button span {
     display: none;
+  }
+  .filter-group {
+    width: 36%;
+    margin-left: 32%;
+  }
+  .filter-group .form-control{
+    font-size: 12px;
+    border: 1px dashed #aaa;
+    height: 38px;
   }
   #breed-dropdown, .breed-sort {
     font-size: 12px;
@@ -624,19 +773,48 @@ a.page-title-link {
   .doggo-shape {
     right: -40px;
   }
-  .right-side-title {
-    margin-top: 15px;
-    margin-bottom: -5px;
-  }
   .footer {
     max-width: none;
     margin: 0 auto;
   }
 }
 
+@media (max-width: 768px) {
+  .username span{
+    display: none;
+  }
+  .dogObject .card-img-overlay .card-text {
+    font-size: 8px;
+    line-height: 8px;
+  }
+  .side-info .card-text:not(.side-text) {
+    padding: 0 0;
+    font-size: 8px;
+    line-height: 9px;
+    margin-top: -3px;
+  }
+  .filter-group {
+    width: 60%;
+    margin-left: 20%;
+  }
+}
+
 @media (max-width: 575px) {
   .page-title {
-    float: left;
+    width: 70px;
+  }
+  .page-title, .logout-button {
+    font-size: 10px;
+  }
+  .logout-button {
+    width: 38px;
+  }
+  .page-title span {
+    font-size: 12px;
+    width: 70px;
+  }
+  .scrolling-column {
+    margin-left: -5px;
   }
   .page-title, .logout-button {
     font-size: 16px;
@@ -644,8 +822,8 @@ a.page-title-link {
     height: 38px;
   }
   .card:not(.side-card) {
-    width: calc(100% + 10px);
-    margin-left: -5px;
+    width: calc(100% + 20px);
+    margin-left: -10px;
   }
   .card-title {
     font-size: 14px;
@@ -666,6 +844,10 @@ a.page-title-link {
   #breed-dropdown, .breed-sort {
     font-size: 10px;
   }
+  .filter-group {
+    width: calc(70% - 60px);
+    margin-left: calc(15% + 30px);
+  }
 }
 
 @keyframes gradient {
@@ -678,6 +860,15 @@ a.page-title-link {
 	100% {
 		background-position: 0% 50%;
 	}
+}
+
+@keyframes wiggleIcon {
+  0% { transform: rotate(0deg) translate(-50%, -50%); }
+  35% { transform: rotate(5deg) translate(-10%, -50%); }
+  45% { transform: rotate(-5deg) translate(-90%, -50%); }
+  55% { transform: rotate(0deg) translate(-50%, -50%); }
+  65% { transform: rotate(0deg) translate(-50%, -50%); }
+  100% { transform: rotate(0deg) translate(-50%, -50%); }
 }
 
 @keyframes rotation {

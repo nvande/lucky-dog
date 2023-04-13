@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
-import { Container, Row, Col, Button, Form, Alert, InputGroup } from 'react-bootstrap';
+import { Container, Row, Col, Button, Form, Alert } from 'react-bootstrap';
 import { Navigate } from 'react-router-dom';
 
 import { login } from '../utility/LoginUtility.js';
 
 import constraints from '../validate/validate.js';
 import Cookies from 'universal-cookie';
+
+import SpinnerBit from './bits/SpinnerBit.js';
 
 export default function LoginComponent() {
     const validate = require("validate.js");
@@ -181,7 +183,7 @@ export default function LoginComponent() {
 					</Row>
                     <div className={'text-center mt-4'}>
                         <Button className={'px-5 ldbutton'} onClick={postLogin}>
-                            { loading ? "Loading..." : "View Dogs" }
+                            { loading ? <SpinnerBit/> : "View Dogs" }
                         </Button>
                     </div>
                 </Container>

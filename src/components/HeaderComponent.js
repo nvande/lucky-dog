@@ -14,7 +14,6 @@ function HeaderComponent(){
     const cookies = new Cookies();
 
     const user = cookies.get('user');
-    const name = cookies.get('name');
 
     const clickLogout = () => {
         cookies.remove('name');

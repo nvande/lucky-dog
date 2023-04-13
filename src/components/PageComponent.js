@@ -7,7 +7,7 @@ const attributes = "Dog images provided by Chatra Ardhisuryo on Vecteezy.com and
 function PageComponent(props) {
   return (
     <div>
-        <HeaderComponent user={props.user} setUser={props.setUser}/>
+        <HeaderComponent/>
         <div className={'container ldBody mt-sm-5'}>
           {props.children}
         <FooterComponent footer={footer} attributes={attributes}/>

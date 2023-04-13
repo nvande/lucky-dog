@@ -1,13 +1,16 @@
 import { useState, useEffect } from 'react';
-import { Container, Row, Col, Button, ButtonGroup } from 'react-bootstrap';
-import { FaHeart } from 'react-icons/fa';
+import { Navigate } from 'react-router-dom';
+import { Container, Row, Col, Button, ButtonGroup, Form, InputGroup } from 'react-bootstrap';
+import { FaHeart, FaDog } from 'react-icons/fa';
+import { IoOptions } from 'react-icons/io5'
 
 import { DragDropContext, Draggable } from 'react-beautiful-dnd';
+import Cookies from 'universal-cookie';
 import StrictModeDroppable from './dnd/StrictModeDroppable.js';
 import useBreakpoint from '../utility/UseBreakpoint.js';
 
 import { search, getBreeds } from '../utility/SearchUtility.js';
-import { dogInfo, getCityByZip } from '../utility/DogObjectUtility.js';
+import { getDogs, getDogCities } from '../utility/DogObjectUtility.js';
 import DogComponent from './dogs/DogComponent.js';
 import BreedDropdownComponent from './dogs/BreedDropdownComponent.js';
 import SpinnerBit from './bits/SpinnerBit.js';
@@ -25,41 +28,64 @@ function BrowseComponent() {
 	const [page, setPage] = useState(0);
 
 	const [favDogObjects, setFavDogObjects] = useState([]);
-	const [favDogCities, setFavDogCities] = useState({});
 
 	const [nextUrl, setNextUrl] = useState(null);
 	const [prevUrl, setPrevUrl] = useState(null);
 	
-	const [dragging, setDragging] = useState(false);
+	const [draggingR, setDraggingR] = useState(false);
+	const [draggingL, setDraggingL] = useState(false);
 	const [loading, setLoading] = useState(true);
 	const [dogLoading, setDogLoading] = useState(false);
 	const [error, setError] = useState(null);
+	const [redirect, setRedirect] = useState(null);
 
 	const size = useBreakpoint();
+	const cookies = new Cookies();
 
 	useEffect(() => {
-		fetchBreeds();
-		fetchResults();
+		if(!cookies.get('user')) {
+			setRedirect('/login');
+		} else {
+			fetchBreeds();
+			fetchResults();
+		}
 	}, []);
 
 	useEffect(() => {
-		fetchDogObjects(resultIds).then(() => {
-			fetchCities();
-		})
+		fetchDogObjects(resultIds);
 	}, [resultIds]);
+
+	useEffect(() => {
+		fetchCities(dogObjects);
+	}, [dogObjects])
 
 	useEffect(() => {
 		fetchResults();
 		setPage(0);
 	}, [selectedBreeds, sortAsc]);
 
-	const fetchCities = async () => {
-		const newCities = {};
-		for (const dogObject of dogObjects) {
-		  const city = await getCityByZip(dogObject.zip_code);
-		  newCities[dogObject.id] = city;
+	const fetchCities = async (dogObjects) => {
+		const newDogs = [];
+
+		dogObjects.forEach((dogObject) => {
+			// only fetch if we don't already have a city for this dog
+			// prevents unneccesary requests on page returns
+			if(!dogCities[dogObject.id]) {
+				newDogs.push(dogObject);
+			}
+		});
+
+		console.log(newDogs);
+
+		let newCities = {};
+		const data = await getDogCities(newDogs);
+		if(data.success) {
+			newCities = data.dogCities;
 		}
-		setDogCities(newCities);
+
+		console.log(newCities);
+
+		setDogCities({...newCities, ...dogCities});
 	};
 
 	const fetchBreeds = async() => {
@@ -97,7 +123,7 @@ function BrowseComponent() {
 		setDogLoading(true);
 
 		try {
-            await dogInfo(dogIds).then((response) => {
+            await getDogs(dogIds).then((response) => {
 			  if(response.success) {
 
 				// don't show the dog object if we've already got it in our favorites
@@ -111,6 +137,47 @@ function BrowseComponent() {
         } finally {
             setDogLoading(false);
         }		
+	}
+
+	const addToFavs = (index) => {
+		const dogs = [...dogObjects];
+		const [removed] = dogs.splice(index, 1);
+	
+		// remove action
+		setDogObjects(dogs);
+	
+		// add action
+		// but quit out if it's a duplicate (happens if page changed)
+		if (favDogObjects.some((dog) => dog.id === removed.id)) {
+		console.log('dupe!');
+		return;
+		}
+	
+		// add dog to the new list
+		const newFavDogObjects = [...favDogObjects];
+		newFavDogObjects.push(removed);
+
+		setFavDogObjects(newFavDogObjects);
+	}
+
+	const removeFromFavs = (index) => {
+		const favs = [...favDogObjects];
+		const [removed] = favs.splice(index, 1);
+	
+		// remove action
+		setFavDogObjects(favs);
+	
+		// add action
+		if (dogObjects.some((dog) => dog.id === removed.id)) {
+		  console.log('dupe.');
+		  return;
+		}
+	
+		// add dog to the correct location in the new list
+		const newDogObjects = [...dogObjects];
+		newDogObjects.push(removed);
+
+		setDogObjects(newDogObjects);
 	}
 
 	const toggleOrder = () => {
@@ -142,12 +209,18 @@ function BrowseComponent() {
 		return result;
 	};
 
-	const onDragStart = () => {
-		setDragging(true);
+	const onDragStart = (result) => {
+		const sourceDroppableId = result.source.droppableId;
+		if (sourceDroppableId === 'dogDrop') {
+			setDraggingL(true);
+		} else if (sourceDroppableId === 'favDrop') {
+			setDraggingR(true);
+		}
 	}
 
 	const onDragEnd = (result) => {
-		setDragging(false);
+		setDraggingL(false);
+		setDraggingR(false);
 	  
 		// dropped outside the list
 		if (!result.destination) {
@@ -180,6 +253,7 @@ function BrowseComponent() {
 		  } else {
 			newFavDogObjects.splice(result.destination.index, 0, removed);
 		  }
+
 		  setFavDogObjects(newFavDogObjects);
 		} else if (sourceDroppableId === 'favDrop' && destinationDroppableId === 'dogDrop') {
 		  const favs = [...favDogObjects];
@@ -223,74 +297,107 @@ function BrowseComponent() {
 		  }
 		}
 	  };
-	  
 
+	if(redirect) {
+    	return (
+    		<Navigate to={redirect}/>
+    	);
+    }
+	  
 	if (loading) {
-	    return <SpinnerBit  className={'fs-1 mt-5'}/>
+	    return <SpinnerBit className={'fs-1 mt-5'}/>
 	}
 
 	return (
 	<>
 		<DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
-			<div className="breed-button-wrapper sticky-top sticky-bottom">
-				<ButtonGroup className="text-center mt-2 pt-3 mb-4 breed-button-group">
-					<BreedDropdownComponent
-						breeds={breeds}
-						selectedBreeds={selectedBreeds}
-						handleBreedSelect={handleBreedSelect}
-						size={size}
+			<div className="filter-wrapper sticky-top">
+				<InputGroup className="mb-3 filter-group sticky-top">
+					<InputGroup.Text className="ldbutton" id="basic-addon1">
+						<IoOptions className='text-white'/>
+					</InputGroup.Text>
+					<Form.Control
+					placeholder="Filter by Zip, Address, Country, State..."
+					aria-label="Filter"
+					aria-describedby="basic-addon1"
 					/>
-					{selectedBreeds.length != 1 && 
-						<Button variant='secondary' onClick={toggleOrder} className='breed-sort'>
-							<span>{selectedBreeds.join(',').length < 64 ? `Sort: Breed ` : ''}</span> { sortAsc ? "↓" : "↑"}
-						</Button>
-					}
-				</ButtonGroup>
+				</InputGroup>
+				<div className="breed-button-wrapper">
+					<ButtonGroup className="text-center breed-button-group">
+						<BreedDropdownComponent
+							breeds={breeds}
+							selectedBreeds={selectedBreeds}
+							handleBreedSelect={handleBreedSelect}
+							size={size}
+						/>
+						{selectedBreeds.length != 1 && 
+							<Button variant='secondary' onClick={toggleOrder} className='breed-sort'>
+								<span>{selectedBreeds.join(',').length < 64 ? `Sort: Breed ` : ''}</span> { sortAsc ? "↓" : "↑"}
+							</Button>
+						}
+					</ButtonGroup>
+				</div>
 			</div>
-			<Container fluid>
-				<Row>
-				<Col xs={8} sm={9} md={10} className="scrolling-column">
-				{dogLoading && 
-						<p className={'text-center'}>
-							<SpinnerBit className={'fs-1 mt-5'}/>
-						</p>
-					}
-					{!resultIds &&
-						<p className={'text-center'}>
-							No results.
-						</p>
-					}
-					{dogObjects &&
-						<StrictModeDroppable droppableId="dogDrop" direction="vertical">
-							{(provided, snapshot) => (
-								<Row
-								className="justify-content-center"
-								ref={provided.innerRef}
-								{...provided.droppableProps}
-								>
-									{dogObjects.map((dogObject, index) => (
-										<Draggable key={dogObject.id} draggableId={dogObject.id} index={index}>
-										{(provided, snapshot) => (
-											<Col
-												xs={6} md={4} lg={3}
-												className='dogObject'
-												ref={provided.innerRef}
-												{...provided.draggableProps}
-												{...provided.dragHandleProps}
-											>
-												<DogComponent dogObject={dogObject} city={dogCities[dogObject.id]} size="large" />
-											</Col>
-										)}
-										</Draggable>
-									))}
-									{provided.placeholder}
-								</Row>
-							)}
-						</StrictModeDroppable>
-					}
+		<Container fluid>
+			<Row>
+				<Col xs={7} sm={9} md={10} className='scrolling-column'>
+					<div className={`d-block left-side-scroller${draggingR ? ' dragging' : ''}`}>
+					{dogLoading && 
+							<p className={'text-center'}>
+								<SpinnerBit className={'fs-1 mt-5'}/>
+							</p>
+						}
+						{!resultIds &&
+							<p className={'text-center'}>
+								No results.
+							</p>
+						}
+						{resultIds && !dogObjects.length && !dogLoading &&
+							<>
+								<h3 className='mt-5'>That's all the dogs on this page!</h3>
+								<p className={'text-center'}>
+									You can keep browsing for dogs on the next page.
+								</p>
+								<h1 className='standout-text text-center'><FaDog/><FaHeart className='inline-icon'/></h1>
+							</>
+						}
+						{dogObjects &&
+							<StrictModeDroppable droppableId="dogDrop" direction="vertical">
+								{(provided, snapshot) => (
+									<Row
+									className="justify-content-center"
+									ref={provided.innerRef}
+									{...provided.droppableProps}
+									>
+										{dogObjects.map((dogObject, index) => (
+											<Draggable key={dogObject.id} draggableId={dogObject.id} index={index}>
+											{(provided, snapshot) => (
+												<Col
+													xs={12} sm={6} md={4} lg={3}
+													className='dogObject'
+													ref={provided.innerRef}
+													{...provided.draggableProps}
+													{...provided.dragHandleProps}
+												>
+													<DogComponent
+														dogObject={dogObject}
+														city={dogCities[dogObject.id]}
+														size="large"
+														addFunc={() => addToFavs(index)}
+													/>
+												</Col>
+											)}
+											</Draggable>
+										))}
+										{provided.placeholder}
+									</Row>
+								)}
+							</StrictModeDroppable>
+						}
+					</div>
 				</Col>
-				<Col xs={4} sm={3} md={2}>
-					<div className="sticky-top sticky-bottom right-side-container">
+				<Col xs={5} sm={3} md={2}>
+					<div className={`sticky-top right-side-container${draggingL ? ' dragging' : ''}`}>
 						<h6 className="right-side-title ms-2"><FaHeart className='inline-icon' /> Favorite Dogs: </h6>
 						{favDogObjects.length < 1 &&
 							<div className='mt-4 ms-1 me-3 right-side-empty'>
@@ -302,7 +409,7 @@ function BrowseComponent() {
 								</p>
 							</div>
 						}
-						<div className='right-side-scroller sticky-top'>
+						<div className={`right-side-scroller`}>
 							<StrictModeDroppable droppableId="favDrop" direction="vertical">
 								{(provided, snapshot) => (
 									<div
@@ -319,7 +426,12 @@ function BrowseComponent() {
 												{...provided.draggableProps}
 												{...provided.dragHandleProps}
 											>
-												<DogComponent dogObject={dogObject} city={dogCities[dogObject.id]} size="small" />
+												<DogComponent
+													dogObject={dogObject}
+													city={dogCities[dogObject.id]}
+													size="small"
+													removeFunc={() => removeFromFavs(index)}
+												/>
 											</div>
 										)}
 										</Draggable>
