@@ -78,7 +78,7 @@ const getDogs = async (dogIds) => {
 };
 
 
-  const getDogCities = async (dogObjects) => {
+const getDogCities = async (dogObjects) => {
     let requestOptions = null;
     let success = false;
     let er = null;
@@ -130,4 +130,51 @@ const getDogs = async (dogIds) => {
     return { success, dogCities }
   }
 
-  export { getDogs, getDogCities };
+  const matchDog = async (dogObjects) => {
+    let requestOptions = null;
+    let success = false;
+    let er = null;
+
+    let dogIds = []
+    let match = null;
+
+    dogObjects.forEach((dogObject) => {
+        dogIds.push(dogObject.id);
+    });
+  
+    try {
+      requestOptions = {
+        method: 'POST',
+        headers: {
+          'fetch-api-key': API_KEY,
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include',
+        body: JSON.stringify(dogIds)
+      };
+    } catch (error) {
+      console.error(error);
+      er = "Error while fetching dog information. Please try again or contact support.";
+    }
+    if (requestOptions) {
+      try {
+        const res = await fetch("https://frontend-take-home-service.fetch.com/dogs/match", requestOptions);
+        const data = await res.json();
+        match = data.match;
+
+        success = true;
+
+      } catch (error) {
+        console.error(error);
+        er = "Error while fetching dog information. Please try again or contact support.";
+      }
+    }
+  
+    if(er) {
+      throw new Error(er);
+    }
+
+    return { success, match }
+  }
+
+  export { getDogs, getDogCities, matchDog };

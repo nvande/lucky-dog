@@ -3,7 +3,7 @@ import { Dropdown, DropdownButton, Form } from "react-bootstrap";
 
 import TooltipBit from "../bits/TooltipBit";
 
-const BreedDropdownComponent = ({ breeds, selectedBreeds, handleBreedSelect, size }) => {
+const BreedDropdownComponent = ({ breeds, selectedBreeds, handleBreedSelect, loadingBreeds, size }) => {
   const [search, setSearch] = useState("");
 
   const filteredBreeds = breeds.filter((breed) =>
@@ -29,26 +29,28 @@ const BreedDropdownComponent = ({ breeds, selectedBreeds, handleBreedSelect, siz
   return (
     <DropdownButton
       id="breed-dropdown"
-      title={<TooltipBit tip="Filter by dog breed" order={3}>{title}</TooltipBit>}
+      title={<TooltipBit tip="Filter by dog breed (optional)" order={3}>{title}</TooltipBit>}
     >
-      <div className="breed-menu">
-        <Form.Control
-          type="text"
-          placeholder="Search for a Breed"
-          className="breed-search"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        {filteredBreeds.map((breed) => (
-          <Dropdown.Item
-            key={breed}
-            className={selectedBreeds.includes(breed) ? "selected" : ""}
-            onClick={() => handleBreedSelect(breed)}
-          >
-            {breed}
-          </Dropdown.Item>
-        ))}
-      </div>
+      {!loadingBreeds &&
+        <div className="breed-menu">
+          <Form.Control
+            type="text"
+            placeholder="Search for a Breed"
+            className="breed-search"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+          {filteredBreeds.map((breed) => (
+            <Dropdown.Item
+              key={breed}
+              className={selectedBreeds.includes(breed) ? "selected" : ""}
+              onClick={() => handleBreedSelect(breed)}
+            >
+              {breed}
+            </Dropdown.Item>
+          ))}
+        </div>
+      }
     </DropdownButton>
   );
 };

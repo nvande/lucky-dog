@@ -12,10 +12,10 @@ function LoginPage() {
                 <Container>
                     <Row>
                         <Col xs={8}>
-                        <h1 className='mx-5 standout-text'>
+                        <h1 className='text-start'>
                             We are so happy you are chosing to adopt!
                         </h1>
-                        <h4 className='mx-5 standout-text'>
+                        <h4 className='text-start'>
                             First, we just need a few pieces of basic information so we can make sure we can connect you to your <u>top dog.</u>
                         </h4>
                         </Col>
