@@ -1,4 +1,4 @@
-const PAGE_SIZE = 12;
+const PAGE_SIZE = 24;
 
 const search = async (page, breeds, zips, asc=true) => {
   let requestOptions = null;

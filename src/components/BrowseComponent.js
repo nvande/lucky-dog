@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import { Container, Row, Col, Button, ButtonGroup } from 'react-bootstrap';
-import { FaHeart, FaDog } from 'react-icons/fa';
+import { FaHeart, FaDog, FaGlobe } from 'react-icons/fa';
 
 import { DragDropContext, Draggable } from 'react-beautiful-dnd';
 import Cookies from 'universal-cookie';
@@ -41,6 +41,8 @@ function BrowseComponent() {
 	const [error, setError] = useState(null);
 	const [redirect, setRedirect] = useState(null);
 
+	const [didSearch, setDidSearch] = useState(false);
+
 	const size = useBreakpoint();
 	const cookies = new Cookies();
 
@@ -49,7 +51,6 @@ function BrowseComponent() {
 			setRedirect('/login');
 		} else {
 			fetchBreeds();
-			fetchResults();
 		}
 	}, []);
 
@@ -62,6 +63,7 @@ function BrowseComponent() {
 	}, [dogObjects])
 
 	useEffect(() => {
+		setDidSearch(true);
 		fetchResults();
 	}, [page, selectedBreeds, zips, sortAsc]);
 
@@ -144,8 +146,7 @@ function BrowseComponent() {
 	
 		// duplicate check
 		if (favDogObjects.some((dog) => dog.id === removed.id)) {
-		console.log('dupe!');
-		return;
+			return;
 		}
 	
 		// add dog to the new list
@@ -359,9 +360,9 @@ function BrowseComponent() {
 								<h1 className='standout-text text-center'><FaDog/><FaHeart className='inline-icon'/></h1>
 							</>
 						}
-						{!zips &&
-							<p>
-								No Results. Showing all Dogs.
+						{!zips.length && !!didSearch &&
+							<p className='text-muted'>
+								<FaGlobe className='inline-icon me-1'/> Showing dogs in all areas.
 							</p>
 						}
 						{dogObjects &&
