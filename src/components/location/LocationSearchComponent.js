@@ -127,6 +127,7 @@ function LocationSearchComponent({setZips, selectedStates, handleSelect}) {
                 {!!selectedStates.length && 
                     <div className='selected-states py-2'>
                         <FaFilter className='inline-icon pe-1'/>
+                        {`State Filter: `}
                         {selectedStates.join(", ")}
                     </div>
                 }

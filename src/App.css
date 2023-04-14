@@ -369,6 +369,7 @@ a.page-title-link {
 #breed-dropdown, #state-dropdown, .breed-sort {
   height: 38px;
   overflow-x: scroll;
+  overflow-y: hidden;
   white-space: nowrap;
 }
 
