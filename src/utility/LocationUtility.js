@@ -107,15 +107,16 @@ const getZips = async (locObject, states) => {
     let locations = [];
 
     // if we have a geoBoundingBox,
-    // we don't care about city
+    // we don't care about the
+    // city or state on the locObject,
+    // already accounted for that
+    // when building the box
     if (locObject.geoBoundingBox) {
         locObject.city = null;
         locObject.states = null;
-    } else {
-        locObject.geoBoundingBox = null;
     }
 
-    // but we will still filter by states if we can
+    // but we still apply states filter
     if (states.length) {
         locObject.states = states;
     }

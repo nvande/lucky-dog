@@ -20,11 +20,11 @@ function HomePage() {
                                 Adoption not only gives a deserving animal a loving home,
                                 it also combats pet overpopulation and promotes a more humane society.
                             </h3>
-                            <h2 className='mx-5 mt-5 fw-bold'>
+                            <h2 className='impact-text mx-5 mt-4 mt-sm-5 fw-bold'>
                                 Save a life. Adopt a dog.
                             </h2>
                             <Link to="login">
-                                <Button className='mt-5 mb-2 ldbutton'> Find your Lucky Dog </Button>
+                                <Button className='mt-2 mt-sm-3 mt-md-5 mb-1 mb-md-2 ldbutton'> Find your Lucky Dog </Button>
                             </Link>
                         </Col>
                         <Col xs={12} md={4}>

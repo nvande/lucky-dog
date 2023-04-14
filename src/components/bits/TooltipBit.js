@@ -32,7 +32,7 @@ function TooltipBit(props) {
       trigger={['hover', 'focus']}
       show={show}
     >
-      <div className="hover-me">
+      <div className={`tooltip-bit ${props.isModal ? ' is-modal' : ''}`}>
         {props.children}
       </div>
     </OverlayTrigger>

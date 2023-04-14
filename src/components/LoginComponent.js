@@ -72,8 +72,8 @@ export default function LoginComponent() {
         try {
             await login( name, email ).then((success) => {
                 if(success) {
-					cookies.set('name', name, { path: '/' });
-					cookies.set('user', email, { path: '/' });
+					cookies.set('name', name, { path: '/', maxAge: 60 * 60 });
+					cookies.set('user', email, { path: '/', maxAge: 60 * 60 });
                     setRedirect('/browse');
                 }
             });
@@ -94,7 +94,7 @@ export default function LoginComponent() {
 	return (
 		<div>
 			<Form>
-                <hr className='mb-5 mt-5 mx-3'/>
+                <hr className='my-4 my-md-5 mx-3'/>
                 <h3 className='text-start mx-3'>Your basic info:</h3>
                 { error && 
                     <Alert variant="danger" onClose={() => setError(false)} dismissible>
