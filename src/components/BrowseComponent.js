@@ -339,6 +339,7 @@ function BrowseComponent() {
 			<Row>
 				<Col xs={7} sm={9} md={10} className='scrolling-column'>
 					<div className={`d-block left-side-scroller${draggingR ? ' dragging' : ''}`}>
+						<TooltipBit tip="Drag dogs you like from over here..." order={5}/>
 						{dogLoading && 
 							<p className={'text-center'}>
 								<SpinnerBit className={'fs-1 mt-5'}/>
@@ -401,6 +402,7 @@ function BrowseComponent() {
 				<Col xs={5} sm={3} md={2}>
 					<div className={`sticky-top right-side-container${draggingL ? ' dragging' : ''}`}>
 						<h6 className="right-side-title ms-2"><FaHeart className='inline-icon' /> Favorite Dogs: </h6>
+						<TooltipBit tip="... to over here." order={6}/>
 						{favDogObjects.length < 1 &&
 							<div className='mt-4 ms-1 me-3 right-side-empty'>
 								<h6>
