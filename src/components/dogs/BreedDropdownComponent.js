@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Dropdown, DropdownButton, Form } from "react-bootstrap";
 
+import TooltipBit from "../bits/TooltipBit";
+
 const BreedDropdownComponent = ({ breeds, selectedBreeds, handleBreedSelect, size }) => {
   const [search, setSearch] = useState("");
 
@@ -27,7 +29,7 @@ const BreedDropdownComponent = ({ breeds, selectedBreeds, handleBreedSelect, siz
   return (
     <DropdownButton
       id="breed-dropdown"
-      title={title}
+      title={<TooltipBit tip="Filter by dog breed" order={3}>{title}</TooltipBit>}
     >
       <div className="breed-menu">
         <Form.Control

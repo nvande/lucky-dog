@@ -6,6 +6,7 @@ import { getLocationInfo, getZips, states } from "../../utility/LocationUtility"
 
 import { IoOptions } from 'react-icons/io5'
 import { FaFilter } from 'react-icons/fa';
+import TooltipBit from '../bits/TooltipBit';
 
 function LocationSearchComponent({setZips, selectedStates, handleSelect}) {
     const [searchValue, setSearchValue] = useState('');
@@ -68,9 +69,13 @@ function LocationSearchComponent({setZips, selectedStates, handleSelect}) {
 
     const dropdownIcon = (sel) => {
         return (
-            sel.length ?
-            sel.length > 1 ? sel.length : sel[0] :
-            <IoOptions/> 
+            <TooltipBit tip="Filter by State" order={0}>
+            {
+              sel.length ?
+              sel.length > 1 ? sel.length : sel[0] :
+              <IoOptions/>
+            }
+            </TooltipBit>
         );
     };
     
@@ -79,6 +84,7 @@ function LocationSearchComponent({setZips, selectedStates, handleSelect}) {
             <Row className="filter-group flex-column-reverse flex-lg-row-reverse mt-5">
                 <Col sm={12} lg={6} xl={5} xxl={4}>
                     <InputGroup className="mb-3 sticky-top float-xs-start">
+                        <TooltipBit tip="Specify a range in miles" order={2}/>
                         <Form.Control
                             type="text"
                             className="text-end"
@@ -107,6 +113,7 @@ function LocationSearchComponent({setZips, selectedStates, handleSelect}) {
 
                             </div>
                         </DropdownButton>
+                        <TooltipBit tip="Search by typing any location" order={1}/>
                         <Form.Control
                             placeholder="Filter by Zip, Address, Country, State..."
                             aria-label="Filter"

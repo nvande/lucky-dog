@@ -10,10 +10,12 @@ import useBreakpoint from '../utility/UseBreakpoint.js';
 
 import { search, getBreeds } from '../utility/SearchUtility.js';
 import { getDogs, getDogCities } from '../utility/DogObjectUtility.js';
-import DogComponent from './dogs/DogComponent.js';
-import BreedDropdownComponent from './dogs/BreedDropdownComponent.js';
-import SpinnerBit from './bits/SpinnerBit.js';
+
 import LocationSearchComponent from './location/LocationSearchComponent.js';
+import BreedDropdownComponent from './dogs/BreedDropdownComponent.js';
+import DogComponent from './dogs/DogComponent.js';
+import SpinnerBit from './bits/SpinnerBit.js';
+import TooltipBit from './bits/TooltipBit.js';
 
 function BrowseComponent() {
 	const [breeds, setBreeds] = useState([]);
@@ -324,8 +326,9 @@ function BrowseComponent() {
 							handleBreedSelect={handleBreedSelect}
 							size={size}
 						/>
-						{selectedBreeds.length != 1 && 
+						{selectedBreeds.length != 1 &&
 							<Button variant='secondary' onClick={toggleOrder} className='breed-sort'>
+							<TooltipBit tip="Sort by breed, alphabetically ascending or descending" order={4}/>
 								<span>{selectedBreeds.join(',').length < 64 ? `Sort: Breed ` : ''}</span> { sortAsc ? "↓" : "↑"}
 							</Button>
 						}
