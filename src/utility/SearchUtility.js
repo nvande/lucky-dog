@@ -1,4 +1,6 @@
-const search = async (url, breeds, asc=true) => {
+const PAGE_SIZE = 12;
+
+const search = async (page, breeds, zips, asc=true) => {
   let requestOptions = null;
   let success = false;
   let er = null;
@@ -13,17 +15,20 @@ const search = async (url, breeds, asc=true) => {
 
   const API_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NzgzMDU2MTF9.Ky49nXH6qgHJQ0CBsZGYsP7_Is2am3u5j3RAdEl457s';
 
-  if(!url) {
-    url = "/dogs/search";
-    if (breeds.length > 0) {
-      url += "?breeds="+breeds.join('&breeds=');
-      if(breeds.length > 1) {
-        url += "&sort=breed:"+(asc ? "asc" : "desc");
-      }
-    } else {
-      url += "?sort=breed:"+(asc ? "asc" : "desc");
+  let url = "/dogs/search";
+  if (breeds.length > 0) {
+    url += "?breeds="+breeds.join('&breeds=');
+    if(breeds.length > 1) {
+      url += "&sort=breed:"+(asc ? "asc" : "desc");
     }
-    url += "&size=12"
+  } else {
+    url += "?sort=breed:"+(asc ? "asc" : "desc");
+  }
+  url += `&size=${PAGE_SIZE}`
+  url += `&from=${page*PAGE_SIZE}`
+
+  if (zips && zips.length > 0) {
+    url += "&zipCodes="+zips.join('&zipCodes=');
   }
 
   try {

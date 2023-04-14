@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
-import { Container, Row, Col, Button, ButtonGroup, Form, InputGroup } from 'react-bootstrap';
+import { Container, Row, Col, Button, ButtonGroup } from 'react-bootstrap';
 import { FaHeart, FaDog } from 'react-icons/fa';
-import { IoOptions } from 'react-icons/io5'
 
 import { DragDropContext, Draggable } from 'react-beautiful-dnd';
 import Cookies from 'universal-cookie';
@@ -14,10 +13,14 @@ import { getDogs, getDogCities } from '../utility/DogObjectUtility.js';
 import DogComponent from './dogs/DogComponent.js';
 import BreedDropdownComponent from './dogs/BreedDropdownComponent.js';
 import SpinnerBit from './bits/SpinnerBit.js';
+import LocationSearchComponent from './location/LocationSearchComponent.js';
 
 function BrowseComponent() {
 	const [breeds, setBreeds] = useState([]);
 	const [selectedBreeds, setSelectedBreeds] = useState([]);
+	const [selectedStates, setSelectedStates] = useState([]);
+
+	const [zips, setZips] = useState([]);
 
 	const [sortAsc, setSortAsc] = useState(true);
 
@@ -28,9 +31,6 @@ function BrowseComponent() {
 	const [page, setPage] = useState(0);
 
 	const [favDogObjects, setFavDogObjects] = useState([]);
-
-	const [nextUrl, setNextUrl] = useState(null);
-	const [prevUrl, setPrevUrl] = useState(null);
 	
 	const [draggingR, setDraggingR] = useState(false);
 	const [draggingL, setDraggingL] = useState(false);
@@ -61,12 +61,14 @@ function BrowseComponent() {
 
 	useEffect(() => {
 		fetchResults();
+	}, [page, selectedBreeds, zips, sortAsc]);
+
+	useEffect(() => {
 		setPage(0);
-	}, [selectedBreeds, sortAsc]);
+	}, [selectedBreeds, zips]);
 
 	const fetchCities = async (dogObjects) => {
 		const newDogs = [];
-
 		dogObjects.forEach((dogObject) => {
 			// only fetch if we don't already have a city for this dog
 			// prevents unneccesary requests on page returns
@@ -74,17 +76,11 @@ function BrowseComponent() {
 				newDogs.push(dogObject);
 			}
 		});
-
-		console.log(newDogs);
-
 		let newCities = {};
 		const data = await getDogCities(newDogs);
 		if(data.success) {
 			newCities = data.dogCities;
 		}
-
-		console.log(newCities);
-
 		setDogCities({...newCities, ...dogCities});
 	};
 
@@ -106,10 +102,8 @@ function BrowseComponent() {
 
 	const fetchResults = async(url) => {
         try {
-            await search(url, selectedBreeds, sortAsc).then((response) => {
+            await search(page, selectedBreeds, zips, sortAsc).then((response) => {
 			  if(response.success) {
-				setNextUrl(response.data.next);
-				setPrevUrl(response.data.prev);
 				setTotal(response.data.total);
     		  	setResultIds(response.data.resultIds);
 			  }
@@ -146,8 +140,7 @@ function BrowseComponent() {
 		// remove action
 		setDogObjects(dogs);
 	
-		// add action
-		// but quit out if it's a duplicate (happens if page changed)
+		// duplicate check
 		if (favDogObjects.some((dog) => dog.id === removed.id)) {
 		console.log('dupe!');
 		return;
@@ -167,9 +160,8 @@ function BrowseComponent() {
 		// remove action
 		setFavDogObjects(favs);
 	
-		// add action
+		// duplicate check
 		if (dogObjects.some((dog) => dog.id === removed.id)) {
-		  console.log('dupe.');
 		  return;
 		}
 	
@@ -185,11 +177,9 @@ function BrowseComponent() {
 	}
 
 	const handleNext = async() => {
-		fetchResults(nextUrl);
 		setPage(page+1)
 	}
 	const handlePrev = async() => {
-		fetchResults(prevUrl);
 		setPage(page-1);
 	}
 
@@ -198,6 +188,14 @@ function BrowseComponent() {
 		  setSelectedBreeds(selectedBreeds.filter((selectedBreed) => selectedBreed !== breed));
 		} else {
 		  setSelectedBreeds([...selectedBreeds, breed]);
+		}
+	};
+
+	const handleStateSelect = (state) => {
+		if (selectedStates.includes(state)) {
+		  setSelectedStates(selectedStates.filter((selectedState) => selectedState !== state));
+		} else {
+			setSelectedStates([...selectedStates, state]);
 		}
 	};
 
@@ -237,10 +235,8 @@ function BrowseComponent() {
 		  // remove action
 		  setDogObjects(dogs);
 	  
-		  // add action
-		  // but quit out if it's a duplicate (happens if page changed)
+		  // duplicate check
 		  if (favDogObjects.some((dog) => dog.id === removed.id)) {
-			console.log('dupe!');
 			return;
 		  }
 	  
@@ -262,9 +258,8 @@ function BrowseComponent() {
 		  // remove action
 		  setFavDogObjects(favs);
 	  
-		  // add action
+		  // duplicate check
 		  if (dogObjects.some((dog) => dog.id === removed.id)) {
-			console.log('dupe.');
 			return;
 		  }
 	  
@@ -305,23 +300,22 @@ function BrowseComponent() {
     }
 	  
 	if (loading) {
-	    return <SpinnerBit className={'fs-1 mt-5'}/>
+	    return (
+			<div className='mt-5 mb-5'>
+				<SpinnerBit className={'fs-1'}/>
+			</div>
+		);
 	}
 
 	return (
 	<>
 		<DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
 			<div className="filter-wrapper sticky-top">
-				<InputGroup className="mb-3 filter-group sticky-top">
-					<InputGroup.Text className="ldbutton" id="basic-addon1">
-						<IoOptions className='text-white'/>
-					</InputGroup.Text>
-					<Form.Control
-					placeholder="Filter by Zip, Address, Country, State..."
-					aria-label="Filter"
-					aria-describedby="basic-addon1"
-					/>
-				</InputGroup>
+				<LocationSearchComponent
+					setZips={setZips}
+					selectedStates={selectedStates}
+					handleSelect={handleStateSelect}
+				/>
 				<div className="breed-button-wrapper">
 					<ButtonGroup className="text-center breed-button-group">
 						<BreedDropdownComponent
@@ -342,7 +336,7 @@ function BrowseComponent() {
 			<Row>
 				<Col xs={7} sm={9} md={10} className='scrolling-column'>
 					<div className={`d-block left-side-scroller${draggingR ? ' dragging' : ''}`}>
-					{dogLoading && 
+						{dogLoading && 
 							<p className={'text-center'}>
 								<SpinnerBit className={'fs-1 mt-5'}/>
 							</p>
@@ -354,12 +348,17 @@ function BrowseComponent() {
 						}
 						{resultIds && !dogObjects.length && !dogLoading &&
 							<>
-								<h3 className='mt-5'>That's all the dogs on this page!</h3>
+								<h3 className='mt-5'>There's nothing here!</h3>
 								<p className={'text-center'}>
-									You can keep browsing for dogs on the next page.
+									You can either refine your search or keep browsing for dogs on the next page.
 								</p>
 								<h1 className='standout-text text-center'><FaDog/><FaHeart className='inline-icon'/></h1>
 							</>
+						}
+						{!zips &&
+							<p>
+								No Results. Showing all Dogs.
+							</p>
 						}
 						{dogObjects &&
 							<StrictModeDroppable droppableId="dogDrop" direction="vertical">
@@ -449,12 +448,12 @@ function BrowseComponent() {
       <div className='sticky-bottom'>
         <Container fluid>
 			<ButtonGroup className="text-center mt-3">
-				<Button className="ldbutton" onClick={handlePrev} disabled={!prevUrl || page == 0}>Prev</Button>
-				<Button className="ldbutton" variant='secondary' disabled> {25*page} - {25*page + dogObjects.length} of {total} </Button>
-				<Button className="ldbutton" onClick={handleNext} disabled={!nextUrl || page == Math.ceil(total/25) - 1}>Next</Button>
+				<Button className="ldbutton" onClick={handlePrev} disabled={page == 0}>Prev</Button>
+				<Button className="ldbutton" variant='secondary' disabled> {12*page} - {12*page + dogObjects.length} of {total} </Button>
+				<Button className="ldbutton" onClick={handleNext} disabled={page == Math.ceil(total/12) - 1}>Next</Button>
 			</ButtonGroup>
 			<p className={'text-center page-count'}>
-				<span>{`Page ${page + 1} of ${Math.ceil(total/25)}`}</span>
+				<span>{`Page ${page + 1} of ${Math.ceil(total/12)}`}</span>
 			</p>
         </Container>
       </div>
