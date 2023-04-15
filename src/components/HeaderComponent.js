@@ -9,7 +9,6 @@ import LogoBit from './bits/LogoBit';
 import { FaSignOutAlt, FaUser } from 'react-icons/fa';
 
 function HeaderComponent(){
-
     const [redirect, setRedirect] = useState(null);
     const cookies = new Cookies();
 
@@ -26,7 +25,7 @@ function HeaderComponent(){
         <Tooltip id="button-tooltip" className="d-md-none" {...props}>
           {user}
         </Tooltip>
-      );
+    );
 
     if(redirect) {
     	return (

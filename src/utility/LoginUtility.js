@@ -24,11 +24,7 @@ const login = async (name, email) => {
     if (requestOptions) {
         await fetch("https://frontend-take-home-service.fetch.com/auth/login", requestOptions)
             .then(res => res)
-            .then((data) => {
-                data.headers.forEach(function(value, name) {
-                    console.log(name + ": " + value);
-                });
-
+            .then(() => {
                 success = true;
             })
             .catch(error => {
@@ -60,7 +56,6 @@ const logout = async () => {
         credentials: 'include'
     })
     .then(response => response.json())
-    .then(data => console.log(data))
     .catch(error => console.error(error));
 
     try {

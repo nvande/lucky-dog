@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Tooltip, OverlayTrigger } from 'react-bootstrap';
 
 function TooltipBit(props) {
   const [show, setShow] = useState(false);
-  const overlayRef = useRef(null);
 
   const order = props.order ?? 1;
 
@@ -11,16 +10,16 @@ function TooltipBit(props) {
     let showTimer, hideTimer;
 
     showTimer = setTimeout(() => {
-      setShow(true);
+        setShow(true);
     }, 4000 * order + 500);
 
     hideTimer = setTimeout(() => {
-      setShow(false);
+        setShow(false);
     }, 4000 * ( order + 1));
 
     return () => {
-      clearTimeout(showTimer);
-      clearTimeout(hideTimer);
+    clearTimeout(showTimer);
+    clearTimeout(hideTimer);
     };
   }, []);
 
@@ -28,11 +27,10 @@ function TooltipBit(props) {
     <OverlayTrigger
       placement="top"
       overlay={<Tooltip>{props.tip}</Tooltip>}
-      ref={overlayRef}
       trigger={['hover', 'focus']}
       show={show}
     >
-      <div className={`tooltip-bit ${props.isModal ? ' is-modal' : ''}`}>
+      <div className={`tooltip-bit ${props.isModal ? 'is-modal' : ''}`}>
         {props.children}
       </div>
     </OverlayTrigger>

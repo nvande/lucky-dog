@@ -91,7 +91,7 @@ function LocationSearchComponent({setZips, selectedStates, handleSelect, size}) 
                             value={distance}
                             onChange={handleDistanceChange}
                             placeholder="Max Range"
-                            tabindex="3"
+                            tabIndex="3"
                         />
                         <InputGroup.Text className="ldbutton text-white fs-6" >{(['xl','xxl'].includes(size)) ? "miles" : "mi."}</InputGroup.Text>
                     </InputGroup>
@@ -102,7 +102,7 @@ function LocationSearchComponent({setZips, selectedStates, handleSelect, size}) 
                             id="state-dropdown"
                             className="ldbutton text-white"
                             title={dropdownIcon(selectedStates)}
-                            tabindex="1"
+                            tabIndex="1"
                         >
                             <div className="state-menu">
                                 <Form.Control 
@@ -122,7 +122,7 @@ function LocationSearchComponent({setZips, selectedStates, handleSelect, size}) 
                             className='w-80'
                             value={searchValue}
                             onChange={handleSearchChange}
-                            tabindex="2"
+                            tabIndex="2"
                         />
                     </InputGroup>
                 </Col>

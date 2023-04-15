@@ -121,8 +121,6 @@ const getZips = async (locObject, states) => {
         locObject.states = states;
     }
 
-    console.log(locObject);
-
     try {
 
       requestOptions = {

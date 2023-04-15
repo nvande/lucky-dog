@@ -342,7 +342,6 @@ function BrowseComponent() {
 	};
 
 	const clearMatch = () => {
-		console.log(clearMatch);
 		setMatchedDog(null);
 	}
 
@@ -413,12 +412,12 @@ function BrowseComponent() {
 								<h1 className='standout-text text-center'><FaDog/><FaHeart className='inline-icon'/></h1>
 							</>
 						}
-						{!zips.length && !!didSearch &&
+						{!zips.length && !!didSearch && !dogLoading &&
 							<p className='text-muted'>
 								<FaGlobe className='inline-icon me-1'/> Showing dogs in all areas.
 							</p>
 						}
-						{dogObjects &&
+						{dogObjects && !dogLoading &&
 							<StrictModeDroppable droppableId="dogDrop" direction="vertical">
 								{(provided, snapshot) => (
 									<Row

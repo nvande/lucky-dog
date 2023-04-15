@@ -74,6 +74,7 @@ export default function LoginComponent() {
                 if(success) {
 					cookies.set('name', name, { path: '/', maxAge: 60 * 60 });
 					cookies.set('user', email, { path: '/', maxAge: 60 * 60 });
+					cookies.set('showHelp', true, { path: '/' });
                     setRedirect('/browse');
                 }
             });

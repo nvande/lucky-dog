@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
-import { FaPhone, FaDog, FaArrowLeft, FaHeart } from 'react-icons/fa';
+import { FaPhone, FaDog, FaArrowLeft, FaHeart, FaArrowDown } from 'react-icons/fa';
 import TooltipBit from '../bits/TooltipBit';
 
 function MatchComponent({ matchedDog, city, yourName, clearMatch }) {
@@ -30,19 +30,18 @@ function MatchComponent({ matchedDog, city, yourName, clearMatch }) {
                 <p>
                     <a href = 'https://github.com/nvande'>Github</a>
                 </p>
-                <p className='mt-3 text-muted fw-light'>
+                <p className='mt-3 text-muted fw-light text-center'>
                     <i>
                         “The well-taught philosophic mind <br/>
                         To all compassion gives; <br/>
                         Casts round the world an equal eye, <br/>
                         And feels for all that lives.”
-                    </i>
-                </p>
-                <p className='text-muted fw-light'>
+                    </i><br/>
                     - THE MOUSE'S PETITION, <br/>
-                    Anna Laetitia Barbauld (1743-1825)
+                    Anna Laetitia Barbauld <br/>
+                    (1743-1825)
                 </p>
-                <h2 className='mt-3'> <FaHeart className='inline-icon me-2'/> Be kind to animals</h2>
+                <h2 className='mt-3'> <FaHeart className='inline-icon me-1'/> Be kind to animals</h2>
                 <Button className='mt-3' onClick={() => setShowPhone(false)}><FaArrowLeft/> Return to App</Button>
             </div>
         </Modal.Body>
@@ -67,6 +66,7 @@ function MatchComponent({ matchedDog, city, yourName, clearMatch }) {
                             <p className='fs-3'><FaDog className='inline-icon me-2'/><i>{matchedDog.breed}</i></p>
                         </>
                     }
+                    <span>To end, click here <FaArrowDown/></span>
                     <Button onClick={() => setShowPhone(true)} className="ldbutton mb-3 mt-2"><FaPhone className='inline-icon me-2'/>
                         Contact Shelter
                     </Button>

@@ -31,6 +31,36 @@ body:before{
 	height: 100vh;
 }
 
+body.hide-tooltips .tooltip.show {
+  opacity: 0!important;
+}
+
+.show-help {
+  display: block;
+  position: absolute;
+  right: 25px;
+  top: 25px;
+  height: 50px;
+  width: 50px;
+  color: #aaa;
+  border: transparent;
+  background: transparent;
+  border-radius: 50%;
+  font-size: 30px;
+}
+
+.show-help svg {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.show-help:hover {
+  background-color: #fff;
+  color: #23a6d5;
+}
+
 .tooltip-bit:after {
   z-index: 400;
   content: attr(data-tooltip);
@@ -43,6 +73,11 @@ body:before{
   color: #fff;
   opacity: 1;
   transition: opacity 0.5s ease-in-out;
+}
+
+.tooltip-bit.hide:after {
+  opacity: 0;
+  display: none;
 }
 
 .tooltip-bit.is-modal:after {
@@ -274,6 +309,7 @@ a.page-title-link {
 }
 
 .ldBody {
+  position: relative;
   background-color: #fefefe;
   border-radius: 2px;
   padding: 10px 20px 60px 20px;
