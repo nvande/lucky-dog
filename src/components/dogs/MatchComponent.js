@@ -67,7 +67,7 @@ function MatchComponent({ matchedDog, city, yourName, clearMatch }) {
                             <p className='fs-3'><FaDog className='inline-icon me-2'/><i>{matchedDog.breed}</i></p>
                         </>
                     }
-                    <span>click here <FaArrowDown/></span>
+                    <span><i>psst!</i> click here <FaArrowDown/></span>
                     <Button onClick={() => setShowPhone(true)} className="ldbutton mb-3 mt-2"><FaPhone className='inline-icon me-2'/>
                         Contact Shelter
                     </Button>
