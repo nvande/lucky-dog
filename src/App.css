@@ -383,6 +383,10 @@ a.page-title-link {
   margin-top: 10px;
 }
 
+.breed-button-wrapper .dropdown-toggle::after {
+  display: none;
+}
+
 .breed-button-group {
   height: 38px;
   display: flex;
@@ -961,7 +965,7 @@ a.page-title-link {
   }
 
   .side-info .card-text:not(.side-text) {
-    padding: 0 0;
+    padding: 0 6px 0;
     font-size: 10px;
     line-height: 10px;
   }
@@ -1001,6 +1005,9 @@ a.page-title-link {
   }
   .logout-button span {
     display: none;
+  }
+  .filter-wrapper {
+    margin-top: -40px;
   }
   .filter-group {
     width: 36%;
