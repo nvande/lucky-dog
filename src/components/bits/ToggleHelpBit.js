@@ -9,6 +9,8 @@ function ToggleHelpBit() {
         const storedShowHelp = window.localStorage.getItem('showHelp');
         if (storedShowHelp && storedShowHelp !== 'undefined') {
             setShowHelp(JSON.parse(storedShowHelp));
+        } else {
+            setShowHelp(JSON.parse(true));
         }
     }, []);
 
