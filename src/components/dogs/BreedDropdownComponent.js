@@ -10,16 +10,22 @@ const BreedDropdownComponent = ({ breeds, selectedBreeds, handleBreedSelect, loa
     breed.toLowerCase().includes(search.toLowerCase())
   );
 
-  let limit = 68;
+  let limit;
   switch (size) {
     case 'md':
       limit = 64
+      break;
     case 'sm':
       limit = 56;
+      break;
     case 'xs':
       limit = 48;
+      break;
+    default:
+      limit = 68;
+      break;
   }
-  const small = ( size == 'xs' || size == 'sm') || selectedBreeds.join(',').length > limit;
+  const small = ( size === 'xs' || size === 'sm') || selectedBreeds.join(',').length > limit;
 
   let title = (selectedBreeds.length) ? selectedBreeds.join(", ") : "Select Breeds";
   if( small && selectedBreeds.length ) {

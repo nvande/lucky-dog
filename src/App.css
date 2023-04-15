@@ -31,6 +31,20 @@ body:before{
 	height: 100vh;
 }
 
+.alert-danger {
+  animation-name: shake;
+  animation-duration: 0.5s;
+  animation-timing-function: ease-out;
+  animation-iteration-count: 1;
+  background-color: #ff375c;
+  color: #fff;
+  border-color: #fff;;
+}
+
+.alert-danger .btn-close {
+  filter: invert(1);
+}
+
 body.hide-tooltips .tooltip.show {
   opacity: 0!important;
 }
@@ -1007,7 +1021,11 @@ a.page-title-link {
     display: none;
   }
   .filter-wrapper {
-    margin-top: -40px;
+    margin-top: -28px;
+  }
+  .selected-states {
+    padding-top: 20px!important;
+    font-size: 12px;
   }
   .filter-group {
     width: 36%;
@@ -1204,6 +1222,14 @@ a.page-title-link {
   55% { transform: rotate(0deg) translate(-50%, -50%); }
   65% { transform: rotate(0deg) translate(-50%, -50%); }
   100% { transform: rotate(0deg) translate(-50%, -50%); }
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-5px) rotate(-2deg); }
+  50% { transform: translateX(5px) rotate(2deg); }
+  75% { transform: translateX(-5px) rotate(-2deg); }
+  100% { transform: translateX(0); }
 }
 
 @keyframes rotation {

@@ -7,18 +7,30 @@ import { getLocationInfo, getZips, states } from "../../utility/LocationUtility"
 import { IoOptions } from 'react-icons/io5'
 import { FaFilter } from 'react-icons/fa';
 import TooltipBit from '../bits/TooltipBit';
+import SpinnerBit from '../bits/SpinnerBit';
 
-function LocationSearchComponent({setZips, selectedStates, handleSelect, size}) {
+function LocationSearchComponent({setZips, selectedStates, handleSelect, size, setError}) {
     const [searchValue, setSearchValue] = useState('');
     const [distance, setDistance] = useState('');
-
     const [dropdownItems, setDropdownItems] = useState(states);
+    const [loading, setLoading] = useState(false);
 
     const debouncedSearch = useDebouncedCallback(async (value, range) => {
         if(searchValue !== '') {
+            setLoading(true);
             const locObject = await getLocationInfo(value, selectedStates, range);
-            const zipObject = await getZips(locObject, selectedStates);
+            let zipObject = [];
+            if(locObject.success && locObject.total_results !== 0) {
+                zipObject = await getZips(locObject, selectedStates);
+                if(!zipObject.success) {
+                    setError(zipObject.er);
+                    setLoading(false);
+                }
+            } else {
+                setError(locObject.er);
+            }
             setZips(zipObject.zips);
+            setLoading(false);
         }
     }, 1000);
 
@@ -82,6 +94,11 @@ function LocationSearchComponent({setZips, selectedStates, handleSelect, size}) 
     return (
         <Container fluid>
             <Row className="filter-group flex-column-reverse flex-lg-row-reverse mt-5">
+                {loading &&
+                    <span className='mt-2 mb-2'>
+                        <SpinnerBit/>
+                    </span>
+                }
                 <Col sm={12} lg={6} xl={5} xxl={4}>
                     <InputGroup className="mb-1 mb-md-3 sticky-top float-xs-start">
                         <TooltipBit tip="Specify a range in miles (optional)" order={2}/>

@@ -64,35 +64,60 @@ const getLocationInfo = async (searchString, selectedStates, range) => {
     const apiKey = process.env.REACT_APP_GEO_API_KEY;
     const searchQuery = searchString + ` ${selectedStates.join(', ')}`; // add the states onto the string for better results
     const url = process.env.REACT_APP_GEO_API_URL+`/geocode/v1/json?q=${encodeURIComponent(searchQuery)}&key=${apiKey}`;
-    const response = await fetch(url);
-    const locationData = await response.json();
+    let locationData = null;
+    let er = null;
+    let success = false;
 
-    // Extract city and state from location data
-    const city = locationData.results[0].components.city;
-    const states = [locationData.results[0].components.state_code];
+    try {
+      const response = await fetch(url);
+      success = response.ok;
 
-    // Compute geoBoundingBox based on location data and range
-    const lat = locationData.results[0].geometry.lat;
-    const lon = locationData.results[0].geometry.lng;
-    const earthRadius = 3959; // in miles
-    const latDelta = range / earthRadius * (180 / Math.PI);
-    const lonDelta = range / (earthRadius * Math.cos(lat * Math.PI / 180)) * (180 / Math.PI);
+      if(response.status === 402) {
+        er = "Geo API rate limit exceeded. Location features will be disabled until tomorrow."
+      }
 
-    let geoBoundingBox = null;
-    if(range) {
-        geoBoundingBox = {
-            bottom_left: {
-            lat: lat - latDelta,
-            lon: lon - lonDelta
-            },
-            top_right: {
-            lat: lat + latDelta,
-            lon: lon + lonDelta
-            }
-        };
+      locationData = await response.json();
+    } catch (error) {
+      console.error(error);
+      er = "Error while fetching location information. Please try again or contact support.";
     }
 
-    return { city, states, geoBoundingBox };
+    let city = searchString;
+    let states = selectedStates;
+    let geoBoundingBox = null;
+    if (locationData) {
+      if(locationData.results.length) {
+        // Extract city and state from location data
+        city = locationData.results[0].components.city;
+        states = [locationData.results[0].components.state_code];
+
+        // Compute geoBoundingBox based on location data and range
+        const lat = locationData.results[0].geometry.lat;
+        const lon = locationData.results[0].geometry.lng;
+        const earthRadius = 3959; // in miles
+        const latDelta = range / earthRadius * (180 / Math.PI);
+        const lonDelta = range / (earthRadius * Math.cos(lat * Math.PI / 180)) * (180 / Math.PI);
+
+        if(range) {
+            geoBoundingBox = {
+                bottom_left: {
+                lat: lat - latDelta,
+                lon: lon - lonDelta
+                },
+                top_right: {
+                lat: lat + latDelta,
+                lon: lon + lonDelta
+                }
+            };
+        } else {
+          er = "Error, no locations found. Please refine your search or contact support if this persists."
+        }
+      }
+    } else {
+      er = "Error reading location data. Please try again or contact support."
+    }
+
+    return { success, city, states, geoBoundingBox, er };
 }
 
 const getZips = async (locObject, states) => {
@@ -102,6 +127,9 @@ const getZips = async (locObject, states) => {
 
     let zips = [];
     let locations = [];
+
+    const batchSize = 5000; // things get weird if we get more than 5000 zips from location API
+    const MAX_ZIPS = 130; // things also break if we send more than 130 zips to the search API
 
     // if we have a geoBoundingBox,
     // we don't care about the
@@ -119,7 +147,6 @@ const getZips = async (locObject, states) => {
     }
 
     try {
-
       requestOptions = {
         method: 'POST',
         headers: {
@@ -127,7 +154,7 @@ const getZips = async (locObject, states) => {
           'Content-Type': 'application/json'
         },
         credentials: 'include',
-        body: JSON.stringify(removeNullProperties({...locObject, ...{size: 100}})),
+        body: JSON.stringify(removeNullProperties({...locObject, ...{size: batchSize}})),
       };
     } catch (error) {
       console.error(error);
@@ -136,45 +163,48 @@ const getZips = async (locObject, states) => {
     if (requestOptions) {
       try {
         let res = await fetch(process.env.REACT_APP_FETCH_API_URL+"/locations/search", requestOptions);
-        let data = await res.json();
-        locations = data.results;
-        let from = locations.length;
+        if(res.ok) {
+          success = true;
+          let data = await res.json();
+          locations = data.results;
+          let from = locations.length;
 
-        locations.forEach((location) => {
-            zips.push(location.zip_code);
-        });
+          locations.forEach((location) => {
+              zips.push(location.zip_code);
+          });
 
-        const total = data.total;
-        while( from < total ) {
-            const size = Math.min(100, total-from);
+          const total = data.total;
+          while( from < total ) {
+              const size = Math.min(batchSize, total-from);
 
-            const sizeObj = {size, from}
-            requestOptions.body = JSON.stringify(removeNullProperties({...locObject, ...sizeObj}));
+              const sizeObj = {size, from}
+              requestOptions.body = JSON.stringify(removeNullProperties({...locObject, ...sizeObj}));
 
-            res = await fetch(process.env.REACT_APP_FETCH_API_URL+"/locations/search", requestOptions);
-            data = await res.json();
-            locations = data.results;
-            from += locations.length;
+              res = await fetch(process.env.REACT_APP_FETCH_API_URL+"/locations/search", requestOptions);
+              data = await res.json();
+              success = res.ok;
+              locations = data.results;
+              from += locations.length;
 
-            locations.forEach((location) => {
-                zips.push(parseInt(location.zip_code));
-            });
+              locations.forEach((location) => {
+                  zips.push(parseInt(location.zip_code));
+              });
+          } 
+
+          // sadly, search breaks if we search for more than 130 zips
+          // therefore, if we have a huge list of too many zips from a big
+          // search area, we just remove random zip codes
+          // until we have less than the specified amount
+          if (zips.length > MAX_ZIPS) {
+              const numToRemove = zips.length - MAX_ZIPS;
+              for (let i = 0; i < numToRemove; i++) {
+                  const indexToRemove = Math.floor(Math.random() * zips.length);
+                  zips.splice(indexToRemove, 1);
+              }
+          }
+        } else {
+          er = "Error fetching dog information. Please try logging out and back in."
         }
-
-        // sadly, search breaks if we search for more than 130 zips
-        // therefore, if we have a huge list of >130 zips from a big
-        // search area, we just remove random zip codes
-        // until we have less than 130 zips
-        const MAX_ZIPS = 130;
-        if (zips.length > MAX_ZIPS) {
-            const numToRemove = zips.length - MAX_ZIPS;
-            for (let i = 0; i < numToRemove; i++) {
-                const indexToRemove = Math.floor(Math.random() * zips.length);
-                zips.splice(indexToRemove, 1);
-            }
-        }
-
-        success = true;
 
       } catch (error) {
         console.error(error);
@@ -186,7 +216,7 @@ const getZips = async (locObject, states) => {
       throw new Error(er);
     }
 
-    return { success, zips }
+    return { success, zips, er }
 }
 
 export { getLocationInfo, getZips, states }

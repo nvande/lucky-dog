@@ -17,7 +17,7 @@ const MatchButtonComponent = ({ show, onClick, loading }) => {
       onClick={() => onClick()}
     >
       {isVisible && 
-        <TooltipBit tip="Click here when you are ready to find your match from your favorites." order={1}/>
+        <TooltipBit tip="Click here when you are ready to find your match from your favorites." order={0.2}/>
       }
       {loading ? <SpinnerBit/> : <FaArrowRight />}
     </Button>

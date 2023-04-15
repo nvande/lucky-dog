@@ -1,5 +1,3 @@
-const PAGE_SIZE = 24;
-
 const search = async (page, breeds, zips, asc=true) => {
   let requestOptions = null;
   let success = false;
@@ -22,8 +20,8 @@ const search = async (page, breeds, zips, asc=true) => {
   } else {
     url += "?sort=breed:"+(asc ? "asc" : "desc");
   }
-  url += `&size=${PAGE_SIZE}`
-  url += `&from=${page*PAGE_SIZE}`
+  url += `&size=${process.env.REACT_APP_PAGE_SIZE}`
+  url += `&from=${page*process.env.REACT_APP_PAGE_SIZE}`
 
   if (zips && zips.length > 0) {
     url += "&zipCodes="+zips.join('&zipCodes=');
@@ -46,7 +44,7 @@ const search = async (page, breeds, zips, asc=true) => {
     try {
       const res = await fetch(process.env.REACT_APP_FETCH_API_URL + url, requestOptions);
       data = await res.json();
-      success = true;
+      success = res.ok;
 
     } catch (error) {
       console.error(error);
@@ -58,11 +56,11 @@ const search = async (page, breeds, zips, asc=true) => {
     throw new Error(er);
   }
 
-  return { success, data };
+  return { success, data, er };
 }
 
   
-  const getBreeds = async () => {
+const getBreeds = async () => {
     let requestOptions = null;
     let success = false;
     let er = null;
@@ -86,7 +84,7 @@ const search = async (page, breeds, zips, asc=true) => {
       try {
         const res = await fetch(process.env.REACT_APP_FETCH_API_URL+"/dogs/breeds", requestOptions);
         breeds = await res.json();
-        success = true;
+        success = res.ok;
 
       } catch (error) {
         console.error(error);
@@ -98,7 +96,7 @@ const search = async (page, breeds, zips, asc=true) => {
       throw new Error(er);
     }
   
-    return { success, breeds };
+    return { success, breeds, er };
   }
   
   export { search, getBreeds };

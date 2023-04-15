@@ -59,7 +59,8 @@ const getDogs = async (dogIds) => {
       try {
         const res = await fetch(process.env.REACT_APP_FETCH_API_URL+"/dogs", requestOptions);
         dogObjects = await res.json();
-        success = true;
+        success = res.ok;
+
       } catch (error) {
         console.error(error);
         er = "Error while fetching dog information. Please try again or contact support.";
@@ -71,7 +72,7 @@ const getDogs = async (dogIds) => {
     throw new Error(er);
   }
 
-  return { success, dogObjects };
+  return { success, dogObjects, er };
 };
 
 
@@ -107,8 +108,7 @@ const getDogCities = async (dogObjects) => {
       try {
         const res = await fetch("https://frontend-take-home-service.fetch.com/locations", requestOptions);
         locations = await res.json();
-
-        success = true;
+        success = res.ok;
 
       } catch (error) {
         console.error(error);
@@ -121,10 +121,10 @@ const getDogCities = async (dogObjects) => {
     });
   
     if(er) {
-      throw new Error(er);
+      success = false;
     }
 
-    return { success, dogCities }
+    return { success, dogCities, er }
   }
 
   const matchDog = async (dogObjects) => {
@@ -158,8 +158,7 @@ const getDogCities = async (dogObjects) => {
         const res = await fetch(process.env.REACT_APP_FETCH_API_URL+"/dogs/match", requestOptions);
         const data = await res.json();
         match = data.match;
-
-        success = true;
+        success = res.ok;
 
       } catch (error) {
         console.error(error);
@@ -168,10 +167,10 @@ const getDogCities = async (dogObjects) => {
     }
   
     if(er) {
-      throw new Error(er);
+      success = false;
     }
 
-    return { success, match }
+    return { success, match, er }
   }
 
   export { getDogs, getDogCities, matchDog };

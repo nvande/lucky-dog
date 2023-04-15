@@ -22,22 +22,20 @@ const login = async (name, email) => {
         er = "Error while logging you in. Please try again or contact support.";
     }
     if (requestOptions) {
-        await fetch(process.env.REACT_APP_FETCH_API_URL+"/auth/login", requestOptions)
-            .then(res => res)
-            .then(() => {
-                success = true;
-            })
-            .catch(error => {
-                console.error(error);
-                er = "Error while logging you in. Please try again or contact support.";
-            });
+        try {
+            const res = await fetch(process.env.REACT_APP_FETCH_API_URL+"/auth/login", requestOptions);
+            success = res.ok;
+        } catch (error) {
+            console.error(error);
+            er = "Error while logging you in. Please try again or contact support.";
+        }
     }
 
     if(er) {
         throw new Error(er);
     }
 
-    return success;
+    return { success, er };
 }
 
 const logout = async () => {
@@ -59,22 +57,20 @@ const logout = async () => {
         er = "Error while logging you out. Please try again or contact support.";
     }
     if (requestOptions) {
-        await fetch(process.env.REACT_APP_FETCH_API_URL+"/auth/logout", requestOptions)
-            .then(res => res)
-            .then(() => {
-                success = true;
-            })
-            .catch(error => {
-                console.error(error);
-                er = "Error while logging you out. Please try again or contact support.";
-            });
+        try {
+            const res = await fetch(process.env.REACT_APP_FETCH_API_URL+"/auth/logout", requestOptions);
+            success = res.ok;
+        } catch (error) {
+            console.error(error);
+            er = "Error while logging you out. Please try again or contact support.";
+        }
     }
 
     if(er) {
         throw new Error(er);
     }
 
-    return success;
+    return { success, er };
 }
 
 export { login, logout };

@@ -70,8 +70,9 @@ export default function LoginComponent() {
     	}
 
         try {
-            await login( name, email ).then((success) => {
-                if(success) {
+            await login( name, email ).then((response) => {
+				console.log(response);
+                if(response.success) {
 					cookies.set('name', name, { path: '/', maxAge: 60 * 60 });
 					cookies.set('user', email, { path: '/', maxAge: 60 * 60 });
                     setRedirect(process.env.REACT_APP_BROWSE_URL);

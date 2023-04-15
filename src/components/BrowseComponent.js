@@ -1,16 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
-import { Container, Row, Col, Button, ButtonGroup } from 'react-bootstrap';
+import { Container, Row, Col, Button, ButtonGroup, Alert } from 'react-bootstrap';
 import { FaHeart, FaDog, FaGlobe } from 'react-icons/fa';
-
 import { DragDropContext, Draggable } from 'react-beautiful-dnd';
 import Cookies from 'universal-cookie';
 import StrictModeDroppable from './dnd/StrictModeDroppable.js';
 import useBreakpoint from '../utility/UseBreakpoint.js';
-
 import { search, getBreeds } from '../utility/SearchUtility.js';
 import { getDogs, getDogCities, matchDog } from '../utility/DogObjectUtility.js';
-
 import LocationSearchComponent from './location/LocationSearchComponent.js';
 import BreedDropdownComponent from './dogs/BreedDropdownComponent.js';
 import DogComponent from './dogs/DogComponent.js';
@@ -19,7 +16,7 @@ import TooltipBit from './bits/TooltipBit.js';
 import MatchButtonComponent from './dogs/MatchButtonComponent.js';
 import MatchComponent from './dogs/MatchComponent.js';
 
-const PER_PAGE = 24;
+const PER_PAGE = process.env.REACT_APP_PAGE_SIZE;
 
 function BrowseComponent() {
 	const [breeds, setBreeds] = useState([]);
@@ -92,20 +89,27 @@ function BrowseComponent() {
 			}
 		});
 		let newCities = {};
-		const data = await getDogCities(newDogs);
-		if(data.success) {
-			newCities = data.dogCities;
-		}
+		try {
+			const response = await getDogCities(newDogs);
+			if(response.success) {
+				newCities = response.dogCities;
+			} else {
+				setError(response.er ?? "Error while dog cities");
+			}
+		} catch (error) {
+            setError(error);
+        }
 		setDogCities({...newCities, ...dogCities});
 	};
 
 	const fetchBreeds = async() => {
 		setLoadingBreeds(true);
-
         try {
             await getBreeds().then((response) => {
 			  if(response.success) {
     		  	setBreeds(response.breeds);
+			  } else {
+				setError(response.er ?? "Error while fetching breeds");
 			  }
 			});
         } catch (error) {
@@ -118,9 +122,12 @@ function BrowseComponent() {
 	const fetchResults = async() => {
         try {
             await search(page, selectedBreeds, zips, sortAsc).then((response) => {
+				console.log(response);
 			  if(response.success) {
 				setTotal(response.data.total);
     		  	setResultIds(response.data.resultIds);
+			  } else {
+				setError(response.er ?? "Error while fetching results");
 			  }
 			});
         } catch (error) {
@@ -130,10 +137,9 @@ function BrowseComponent() {
 
 	const fetchDogObjects = async(dogIds) => {
 		setDogLoading(true);
-
 		try {
             await getDogs(dogIds).then((response) => {
-			  if(response.success) {
+			  if(response.success && response.dogObjects) {
 
 				// don't show the dog object if we've already got it in our favorites
 				// this can happen if we return to a page where we already took a fav
@@ -141,6 +147,8 @@ function BrowseComponent() {
 				setNumAlreadyFav( response.dogObjects.length - dogs.length );
 
     		  	setDogObjects(dogs);
+			  } else {
+				setError(response.er ?? "Error while fetching dogs");
 			  }
 			});
         } catch (error) {
@@ -152,7 +160,6 @@ function BrowseComponent() {
 
 	const findMatch = async() => {
 		setMatchLoading(true);
-
 		try {
             await matchDog(favDogObjects).then((response) => {
 			  if(response.success) {
@@ -179,13 +186,11 @@ function BrowseComponent() {
 		if (favDogObjects.some((dog) => dog.id === removed.id)) {
 			return;
 		}
-
 		setNumAlreadyFav(numAlreadyFav + 1);
 	
 		// add dog to the new list
 		const newFavDogObjects = [...favDogObjects];
 		newFavDogObjects.push(removed);
-
 		setFavDogObjects(newFavDogObjects);
 	}
 
@@ -202,14 +207,12 @@ function BrowseComponent() {
 		if (dogObjects.some((dog) => dog.id === removed.id)) {
 		  return;
 		}
-
 		if (resultIds.includes(removed.id)) {
 			setNumAlreadyFav(numAlreadyFav - 1);
 		
 			// add dog to the correct location in the new list
 			const newDogObjects = [...dogObjects];
 			newDogObjects.push(removed);
-
 			setDogObjects(newDogObjects);
 		}
 	}
@@ -266,7 +269,6 @@ function BrowseComponent() {
 		if (!result.destination) {
 		  return;
 		}
-	  
 		const sourceDroppableId = result.source.droppableId;
 		const destinationDroppableId = result.destination.droppableId;
 	  
@@ -346,7 +348,7 @@ function BrowseComponent() {
 	}
 
 	const onClickMatch = () => {
-		if(favDogObjects.length) {
+		if(favDogObjects && favDogObjects.length) {
 			findMatch();
 		}
 	}
@@ -357,8 +359,18 @@ function BrowseComponent() {
     	);
     }
 
+	console.log(dogObjects);
+
 	return (
 	<>
+		{ error && 
+			<Alert variant="danger" onClose={() => setError(false)} dismissible>
+				<Alert.Heading>Error:</Alert.Heading>
+				<p>
+					{error.toString()}
+				</p>
+			</Alert>
+        }
 		<DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
 			<div className="filter-wrapper sticky-top">
 				<LocationSearchComponent
@@ -366,6 +378,7 @@ function BrowseComponent() {
 					selectedStates={selectedStates}
 					handleSelect={handleStateSelect}
 					size={size}
+					setError={setError}
 				/>
 				<div className="breed-button-wrapper">
 					<ButtonGroup className="text-center breed-button-group">
@@ -376,7 +389,7 @@ function BrowseComponent() {
 							loadingBreeds={loadingBreeds}
 							size={size}
 						/>
-						{selectedBreeds.length != 1 &&
+						{selectedBreeds && selectedBreeds.length !== 1 &&
 							<Button variant='secondary' onClick={toggleOrder} className='breed-sort'>
 							<TooltipBit tip="Sort by breed, alphabetically ascending or descending" order={4}/>
 								<span>{selectedBreeds.join(',').length < 64 ? `Sort: Breed ` : ''}</span> { sortAsc ? "↓" : "↑"}
@@ -400,7 +413,7 @@ function BrowseComponent() {
 								No results.
 							</p>
 						}
-						{resultIds && !dogObjects.length && !dogLoading &&
+						{resultIds && dogObjects && !dogObjects.length && !dogLoading &&
 							<>
 								<h4 className='mt-5'>There's nothing here!</h4>
 								{numAlreadyFav > 0 &&
@@ -412,8 +425,8 @@ function BrowseComponent() {
 								<h1 className='standout-text text-center'><FaDog/><FaHeart className='inline-icon'/></h1>
 							</>
 						}
-						{!zips.length && !!didSearch && !dogLoading &&
-							<p className='text-muted'>
+						{(zips && !zips.length) && !!didSearch && !dogLoading &&
+							<p className='text-muted fw-light'>
 								<FaGlobe className='inline-icon me-1'/> Showing dogs in all areas.
 							</p>
 						}
@@ -454,9 +467,9 @@ function BrowseComponent() {
 				</Col>
 				<Col xs={5} sm={3} md={2}>
 					<div className={`sticky-top right-side-container${draggingL ? ' dragging' : ''}`}>
-						<h6 className="right-side-title ms-2"><FaHeart className='inline-icon' /> { size=='xs' ? 'Fav. Dogs' : 'Favorite Dogs:'} </h6>
+						<h6 className="right-side-title ms-2"><FaHeart className='inline-icon' /> { size==='xs' ? 'Fav. Dogs' : 'Favorite Dogs:'} </h6>
 						<TooltipBit tip="... to over here." order={6}/>
-						{favDogObjects.length < 1 &&
+						{favDogObjects && favDogObjects.length < 1 &&
 							<div className='mt-4 ms-1 me-3 right-side-empty'>
 								<h6>
 									No favorite dogs yet.
@@ -506,16 +519,16 @@ function BrowseComponent() {
 	  { !!total && 
 		<div className='sticky-bottom page-container'>
 				<ButtonGroup className="text-center mt-3 page-buttons">
-					<Button className="ldbutton" onClick={handlePrev} disabled={page == 0}>Prev</Button>
-					<Button className="ldbutton" variant='secondary' disabled> {PER_PAGE*page} - {PER_PAGE*page + dogObjects.length} of {total} </Button>
-					<Button className="ldbutton" onClick={handleNext} disabled={page == Math.ceil(total/PER_PAGE) - 1}>Next</Button>
+					<Button className="ldbutton" onClick={handlePrev} disabled={page === 0}>Prev</Button>
+					<Button className="ldbutton" variant='secondary' disabled> {PER_PAGE*page} - {PER_PAGE*page + (dogObjects ? dogObjects.length : 0)} of {total} </Button>
+					<Button className="ldbutton" onClick={handleNext} disabled={page === Math.ceil(total/PER_PAGE) - 1}>Next</Button>
 				</ButtonGroup>
 				<p className={'text-center page-count'}>
 					<span>{`Page ${page + 1} of ${Math.ceil(total/PER_PAGE)}`}</span>
 				</p>
 		</div>
 	  }
-	  <MatchButtonComponent show={!!favDogObjects.length} onClick={onClickMatch} loading={matchLoading}/>
+	  <MatchButtonComponent show={favDogObjects && !!favDogObjects.length} onClick={onClickMatch} loading={matchLoading}/>
 	  <MatchComponent matchedDog={matchedDog} yourName={yourName} city={matchedDog ? dogCities[matchedDog.id] : '' } clearMatch={clearMatch}/>
 	</>
 	)
