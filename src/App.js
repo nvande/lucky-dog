@@ -11,11 +11,9 @@ import {
   Route,
 } from "react-router-dom";
 
-import { useState } from 'react';
-
 function App() {
 
-  const [user, setUser] = useState(null);
+  console.log(process.env.REACT_APP_TEST);
 
   return (
     <div className="App">
@@ -24,9 +22,6 @@ function App() {
           <Route exact path="/" element={<HomePage/>}/>
           <Route path="/login" element={<LoginPage/>}/>
           <Route path="/browse" element={<BrowsePage/>}/>
-          {/* TODO: more routes
-          <Route path="/match" element={<MatchPage/>}/>
-          */}
         </Routes>
       </Router>
     </div>

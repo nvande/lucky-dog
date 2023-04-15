@@ -13,8 +13,6 @@ const search = async (page, breeds, zips, asc=true) => {
   // resultIds (array of dogs, ids only)
   // total (int number of total dogs for this search)
 
-  const API_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NzgzMDU2MTF9.Ky49nXH6qgHJQ0CBsZGYsP7_Is2am3u5j3RAdEl457s';
-
   let url = "/dogs/search";
   if (breeds.length > 0) {
     url += "?breeds="+breeds.join('&breeds=');
@@ -35,7 +33,7 @@ const search = async (page, breeds, zips, asc=true) => {
     requestOptions = {
       method: 'GET',
       headers: {
-        'fetch-api-key': API_KEY,
+        'fetch-api-key': process.env.REACT_APP_FETCH_API_KEY,
         'Content-Type': 'application/json'
       },
       credentials: 'include'
@@ -46,7 +44,7 @@ const search = async (page, breeds, zips, asc=true) => {
   }
   if (requestOptions) {
     try {
-      const res = await fetch("https://frontend-take-home-service.fetch.com" + url, requestOptions);
+      const res = await fetch(process.env.REACT_APP_FETCH_API_URL + url, requestOptions);
       data = await res.json();
       success = true;
 
@@ -71,13 +69,11 @@ const search = async (page, breeds, zips, asc=true) => {
 
     let breeds = [];
   
-    const API_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NzgzMDU2MTF9.Ky49nXH6qgHJQ0CBsZGYsP7_Is2am3u5j3RAdEl457s';
-  
     try {
       requestOptions = {
         method: 'GET',
         headers: {
-          'fetch-api-key': API_KEY,
+          'fetch-api-key': process.env.REACT_APP_FETCH_API_KEY,
           'Content-Type': 'application/json'
         },
         credentials: 'include'
@@ -88,7 +84,7 @@ const search = async (page, breeds, zips, asc=true) => {
     }
     if (requestOptions) {
       try {
-        const res = await fetch("https://frontend-take-home-service.fetch.com/dogs/breeds", requestOptions);
+        const res = await fetch(process.env.REACT_APP_FETCH_API_URL+"/dogs/breeds", requestOptions);
         breeds = await res.json();
         success = true;
 

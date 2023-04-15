@@ -804,9 +804,17 @@ a.page-title-link {
   border-radius: 5px 5px 0 0;
 }
 
+.page-container {
+  pointer-events: none;
+}
+
+.page-buttons {
+  pointer-events: all;
+}
+
 .match-button {
   position: fixed;
-  z-index: 500;
+  z-index: 999;
   bottom: -600px;
   right: -600px;
   width: 600px;

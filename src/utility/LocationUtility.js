@@ -1,6 +1,3 @@
-const API_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NzgzMDU2MTF9.Ky49nXH6qgHJQ0CBsZGYsP7_Is2am3u5j3RAdEl457s';
-const SEARCH_URL = 'https://frontend-take-home-service.fetch.com/locations/search';
-
 const states = [
     { name: "Alabama", code: "AL" },
     { name: "Alaska", code: "AK" },
@@ -64,9 +61,9 @@ function removeNullProperties(obj) {
 }
 
 const getLocationInfo = async (searchString, selectedStates, range) => {
-    const apiKey = 'f1ef2dd3025b442b9fd435fa6598115d';
+    const apiKey = process.env.REACT_APP_GEO_API_KEY;
     const searchQuery = searchString + ` ${selectedStates.join(', ')}`; // add the states onto the string for better results
-    const url = `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(searchQuery)}&key=${apiKey}`;
+    const url = process.env.REACT_APP_GEO_API_URL+`/geocode/v1/json?q=${encodeURIComponent(searchQuery)}&key=${apiKey}`;
     const response = await fetch(url);
     const locationData = await response.json();
 
@@ -126,7 +123,7 @@ const getZips = async (locObject, states) => {
       requestOptions = {
         method: 'POST',
         headers: {
-          'fetch-api-key': API_KEY,
+          'fetch-api-key': process.env.REACT_APP_FETCH_API_KEY,
           'Content-Type': 'application/json'
         },
         credentials: 'include',
@@ -138,7 +135,7 @@ const getZips = async (locObject, states) => {
     }
     if (requestOptions) {
       try {
-        let res = await fetch(SEARCH_URL, requestOptions);
+        let res = await fetch(process.env.REACT_APP_FETCH_API_URL+"/locations/search", requestOptions);
         let data = await res.json();
         locations = data.results;
         let from = locations.length;
@@ -154,7 +151,7 @@ const getZips = async (locObject, states) => {
             const sizeObj = {size, from}
             requestOptions.body = JSON.stringify(removeNullProperties({...locObject, ...sizeObj}));
 
-            res = await fetch(SEARCH_URL, requestOptions);
+            res = await fetch(process.env.REACT_APP_FETCH_API_URL+"/locations/search", requestOptions);
             data = await res.json();
             locations = data.results;
             from += locations.length;

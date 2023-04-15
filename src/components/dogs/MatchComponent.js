@@ -17,7 +17,7 @@ function MatchComponent({ matchedDog, city, yourName, clearMatch }) {
         <Modal.Body>
             <div className="match-info my-5">
                 <p>
-                    So, that's the end of this demo.<br/>
+                    That's the end of this demo.<br/>
                     I want to thank you for your time to get this far,<br/>
                     and I appreciate your consideration for the postion.
                 </p>
@@ -30,18 +30,20 @@ function MatchComponent({ matchedDog, city, yourName, clearMatch }) {
                 <p>
                     <a href = 'https://github.com/nvande'>Github</a>
                 </p>
-                <p className='mt-3 text-muted fw-light text-center'>
+                <p className='mt-3 text-muted fw-light'>
                     <i>
                         “The well-taught philosophic mind <br/>
                         To all compassion gives; <br/>
                         Casts round the world an equal eye, <br/>
                         And feels for all that lives.”
                     </i><br/>
-                    - THE MOUSE'S PETITION, <br/>
-                    Anna Laetitia Barbauld <br/>
-                    (1743-1825)
+                    <span className='text-center d-block w-100'>
+                        - THE MOUSE'S PETITION, <br/>
+                        Anna Laetitia Barbauld <br/>
+                        (1743-1825)
+                    </span>
                 </p>
-                <h2 className='mt-3'> <FaHeart className='inline-icon me-1'/> Be kind to animals</h2>
+                <h4 className='mt-3'> <FaHeart className='inline-icon me-1'/> Be kind to animals</h4>
                 <Button className='mt-3' onClick={() => setShowPhone(false)}><FaArrowLeft/> Return to App</Button>
             </div>
         </Modal.Body>
@@ -66,7 +68,7 @@ function MatchComponent({ matchedDog, city, yourName, clearMatch }) {
                             <p className='fs-3'><FaDog className='inline-icon me-2'/><i>{matchedDog.breed}</i></p>
                         </>
                     }
-                    <span>To end, click here <FaArrowDown/></span>
+                    <span>click here <FaArrowDown/></span>
                     <Button onClick={() => setShowPhone(true)} className="ldbutton mb-3 mt-2"><FaPhone className='inline-icon me-2'/>
                         Contact Shelter
                     </Button>

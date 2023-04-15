@@ -1,7 +1,4 @@
-const API_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NzgzMDU2MTF9.Ky49nXH6qgHJQ0CBsZGYsP7_Is2am3u5j3RAdEl457s';
-
 const getDogs = async (dogIds) => {
-  const API_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NzgzMDU2MTF9.Ky49nXH6qgHJQ0CBsZGYsP7_Is2am3u5j3RAdEl457s';
   const batchSize = 99;
   let requestOptions = null;
   let success = false;
@@ -19,7 +16,7 @@ const getDogs = async (dogIds) => {
         requestOptions = {
           method: 'POST',
           headers: {
-            'fetch-api-key': API_KEY,
+            'fetch-api-key': process.env.REACT_APP_FETCH_API_KEY,
             'Content-Type': 'application/json'
           },
           credentials: 'include',
@@ -32,7 +29,7 @@ const getDogs = async (dogIds) => {
 
       if (requestOptions) {
         try {
-          const res = await fetch("https://frontend-take-home-service.fetch.com/dogs", requestOptions);
+          const res = await fetch(process.env.REACT_APP_FETCH_API_URL+"/dogs", requestOptions);
           const dogs = await res.json();
           dogObjects = dogObjects.concat(dogs);
           success = true;
@@ -47,7 +44,7 @@ const getDogs = async (dogIds) => {
       requestOptions = {
         method: 'POST',
         headers: {
-          'fetch-api-key': API_KEY,
+          'fetch-api-key': process.env.REACT_APP_FETCH_API_KEY,
           'Content-Type': 'application/json'
         },
         credentials: 'include',
@@ -60,7 +57,7 @@ const getDogs = async (dogIds) => {
 
     if (requestOptions) {
       try {
-        const res = await fetch("https://frontend-take-home-service.fetch.com/dogs", requestOptions);
+        const res = await fetch(process.env.REACT_APP_FETCH_API_URL+"/dogs", requestOptions);
         dogObjects = await res.json();
         success = true;
       } catch (error) {
@@ -96,7 +93,7 @@ const getDogCities = async (dogObjects) => {
       requestOptions = {
         method: 'POST',
         headers: {
-          'fetch-api-key': API_KEY,
+          'fetch-api-key': process.env.REACT_APP_FETCH_API_KEY,
           'Content-Type': 'application/json'
         },
         credentials: 'include',
@@ -146,7 +143,7 @@ const getDogCities = async (dogObjects) => {
       requestOptions = {
         method: 'POST',
         headers: {
-          'fetch-api-key': API_KEY,
+          'fetch-api-key': process.env.REACT_APP_FETCH_API_KEY,
           'Content-Type': 'application/json'
         },
         credentials: 'include',
@@ -158,7 +155,7 @@ const getDogCities = async (dogObjects) => {
     }
     if (requestOptions) {
       try {
-        const res = await fetch("https://frontend-take-home-service.fetch.com/dogs/match", requestOptions);
+        const res = await fetch(process.env.REACT_APP_FETCH_API_URL+"/dogs/match", requestOptions);
         const data = await res.json();
         match = data.match;
 

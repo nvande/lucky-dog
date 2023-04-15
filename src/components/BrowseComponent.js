@@ -504,9 +504,8 @@ function BrowseComponent() {
 			</Container>
 	  </DragDropContext>
 	  { !!total && 
-		<div className='sticky-bottom'>
-			<Container fluid>
-				<ButtonGroup className="text-center mt-3">
+		<div className='sticky-bottom page-container'>
+				<ButtonGroup className="text-center mt-3 page-buttons">
 					<Button className="ldbutton" onClick={handlePrev} disabled={page == 0}>Prev</Button>
 					<Button className="ldbutton" variant='secondary' disabled> {PER_PAGE*page} - {PER_PAGE*page + dogObjects.length} of {total} </Button>
 					<Button className="ldbutton" onClick={handleNext} disabled={page == Math.ceil(total/PER_PAGE) - 1}>Next</Button>
@@ -514,7 +513,6 @@ function BrowseComponent() {
 				<p className={'text-center page-count'}>
 					<span>{`Page ${page + 1} of ${Math.ceil(total/PER_PAGE)}`}</span>
 				</p>
-			</Container>
 		</div>
 	  }
 	  <MatchButtonComponent show={!!favDogObjects.length} onClick={onClickMatch} loading={matchLoading}/>
