@@ -3,7 +3,7 @@ import { Button } from "react-bootstrap";
 import { TbHelp, TbHelpOff } from "react-icons/tb";
 
 function ToggleHelpBit() {
-    const [showHelp, setShowHelp] = useState(helpCookie);
+    const [showHelp, setShowHelp] = useState(false);
 
     useEffect(() => {
         if(showHelp) {

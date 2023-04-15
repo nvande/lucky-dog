@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Container, Row, Col, Button, Form, Alert } from 'react-bootstrap';
 import { Navigate } from 'react-router-dom';
 
@@ -11,7 +11,7 @@ import SpinnerBit from './bits/SpinnerBit.js';
 
 export default function LoginComponent() {
     const validate = require("validate.js");
-	const cookies = new Cookies();
+	const cookies = useMemo(() => new Cookies(), []);
 
 	const [name, setName] = useState({
 		first: '',
@@ -29,7 +29,7 @@ export default function LoginComponent() {
 		if(cookies.get('user')) {
 			setRedirect(process.env.REACT_APP_BROWSE_URL);
 		}
-	}, []);
+	}, [cookies]);
 
     const validateFields = () => {
     	let errors = validate({
@@ -38,7 +38,7 @@ export default function LoginComponent() {
     		last_name: name.last,
 	        email_address:email,
     	}, constraints);
-    	if(errors && errors.length != 0){
+    	if(errors && errors.length !== 0){
     		setErrors(errors);
     		setError("Please fix the following issues before resubmitting: "+validationToString(errors));
     		return false;
@@ -50,7 +50,7 @@ export default function LoginComponent() {
 
     function validationToString (obj) {
 	    let str = '';
-	    for (const [p, val] of Object.entries(obj)) {
+	    for (const [_p, val] of Object.entries(obj)) {
 	        str += ` ${val.join('. ')}. \n`;
 	    }
 	    return str;

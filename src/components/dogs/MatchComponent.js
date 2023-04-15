@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import { FaPhone, FaDog, FaArrowLeft, FaHeart, FaArrowDown } from 'react-icons/fa';
-import TooltipBit from '../bits/TooltipBit';
 
 function MatchComponent({ matchedDog, city, yourName, clearMatch }) {
     const [showPhone, setShowPhone] = useState(false);

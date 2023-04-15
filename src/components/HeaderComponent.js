@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { Link, Navigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Button, Row, Col, Badge, Tooltip, OverlayTrigger } from 'react-bootstrap';
 
 import { logout } from '../utility/LoginUtility';
@@ -9,7 +8,6 @@ import LogoBit from './bits/LogoBit';
 import { FaSignOutAlt, FaUser } from 'react-icons/fa';
 
 function HeaderComponent(){
-    const [redirect, setRedirect] = useState(null);
     const cookies = new Cookies();
 
     const user = cookies.get('user');
@@ -18,7 +16,7 @@ function HeaderComponent(){
         cookies.remove('name', {path: '/'});
         cookies.remove('user', {path: '/'});
         logout();
-        setRedirect(process.env.REACT_APP_SITE_URL);
+        window.location.replace(process.env.REACT_APP_SITE_URL);
     }
 
     const renderTooltip = (props) => (
@@ -26,12 +24,6 @@ function HeaderComponent(){
           {user}
         </Tooltip>
     );
-
-    if(redirect) {
-    	return (
-    		<Navigate to={redirect}/>
-    	);
-    }
 
 	return (
 		<div className={'px-md-1 px-lg-2 pt-2 pb-0 pb-md-2 text-muted sticky-top text-md-start pageHeader text-white clearfix'}>
@@ -41,7 +33,7 @@ function HeaderComponent(){
                         <LogoBit/>
                     </Link>
 				</Col>
-                {user && 
+                {user &&
                     <Col xs="6">
                         <div className="d-inline">
                             <Button className={"ldbutton logout-button float-end mt-0 mt-md-0 mb-2"} onClick={clickLogout}>
