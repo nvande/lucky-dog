@@ -20,7 +20,7 @@ function TooltipBit(props) {
         clearTimeout(showTimer);
         clearTimeout(hideTimer);
     };
-  }, []);
+  }, [order]);
 
   return (
     <OverlayTrigger

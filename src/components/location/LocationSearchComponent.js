@@ -15,7 +15,7 @@ function LocationSearchComponent({setZips, selectedStates, handleSelect, size}) 
     const [dropdownItems, setDropdownItems] = useState(states);
 
     const debouncedSearch = useDebouncedCallback(async (value, range) => {
-        if(searchValue != '') {
+        if(searchValue !== '') {
             const locObject = await getLocationInfo(value, selectedStates, range);
             const zipObject = await getZips(locObject, selectedStates);
             setZips(zipObject.zips);
@@ -24,7 +24,7 @@ function LocationSearchComponent({setZips, selectedStates, handleSelect, size}) 
 
     useEffect(() => {
 		debouncedSearch(searchValue, distance);
-	}, [selectedStates]);
+	}, [selectedStates, searchValue, distance, debouncedSearch]);
 
     const handleSearchChange = (event) => {
         const { value } = event.target;
