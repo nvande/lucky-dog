@@ -12,16 +12,13 @@ import {
 } from "react-router-dom";
 
 function App() {
-
-  console.log(process.env.REACT_APP_TEST);
-
   return (
     <div className="App">
       <Router>
         <Routes>
-          <Route exact path="/" element={<HomePage/>}/>
-          <Route path="/login" element={<LoginPage/>}/>
-          <Route path="/browse" element={<BrowsePage/>}/>
+          <Route exact path={process.env.REACT_APP_SITE_URL} element={<HomePage/>}/>
+          <Route path={process.env.REACT_APP_LOGIN_URL} element={<LoginPage/>}/>
+          <Route path={process.env.REACT_APP_BROWSE_URL} element={<BrowsePage/>}/>
         </Routes>
       </Router>
     </div>

@@ -27,7 +27,7 @@ export default function LoginComponent() {
 
 	useEffect(() => {
 		if(cookies.get('user')) {
-			setRedirect('/browse');
+			setRedirect(process.env.REACT_APP_BROWSE_URL);
 		}
 	}, []);
 
@@ -75,7 +75,7 @@ export default function LoginComponent() {
 					cookies.set('name', name, { path: '/', maxAge: 60 * 60 });
 					cookies.set('user', email, { path: '/', maxAge: 60 * 60 });
 					cookies.set('showHelp', true, { path: '/' });
-                    setRedirect('/browse');
+                    setRedirect(process.env.REACT_APP_BROWSE_URL);
                 }
             });
         } catch (error) {

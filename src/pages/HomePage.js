@@ -23,7 +23,7 @@ function HomePage() {
                             <h2 className='impact-text mx-5 mt-4 mt-sm-5 fw-bold'>
                                 Save a life. Adopt a dog.
                             </h2>
-                            <Link to="login">
+                            <Link to={process.env.REACT_APP_LOGIN_URL}>
                                 <Button className='mt-2 mt-sm-3 mt-md-5 mb-1 mb-md-2 ldbutton'> Find your Lucky Dog </Button>
                             </Link>
                         </Col>

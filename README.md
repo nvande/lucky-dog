@@ -4,10 +4,13 @@ because all dogs should be lucky
 You'll need to create a `.env` file in your lucky-dog project directory before you can start, and you'll need to add to it the following values:
 
 ```
+REACT_APP_SITE_URL = /lucky-dog
+REACT_APP_LOGIN_URL = /lucky-dog/login
+REACT_APP_BROWSE_URL = /lucky-dog/browse
 REACT_APP_FETCH_API_URL = https://frontend-take-home-service.fetch.com
-REACT_APP_FETCH_API_KEY = {PUT YOUR FETCH TAKE-HOME API KEY HERE}
+REACT_APP_FETCH_API_KEY = {{PUT YOUR FETCH TAKE-HOME API KEY HERE}}
 REACT_APP_GEO_API_URL = https://api.opencagedata.com
-REACT_APP_GEO_API_KEY = {PUT YOUR FREE OPENCAGE GEO API KEY HERE}
+REACT_APP_GEO_API_KEY = {{PUT YOUR FREE OPENCAGE GEO API KEY HERE}}
 ```
 
 You should already have a REACT_APP_FETCH_API_KEY.
@@ -22,11 +25,15 @@ In the project directory, you can run:
 ### `npm start`
 
 This runs the React frontend of the app.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Open [http://localhost:3000/lucky-dog](http://localhost:3000/lucky-dog) to view it in your browser.
 
 ## Using the Application
 
-Using the lucky dog application is pretty simple. Once you have configured and launched the app, you will see a homepage.
+Using the lucky dog application is pretty simple. There are also dynamic tooltips to help you along the way.
+
+*note to disable tooltips, just press the question mark on the upper-right of the browse page
+
+Once you have configured and launched the app, you will see a homepage.
 
 Click the "Find your Lucky Dog" button and you can get started.
 

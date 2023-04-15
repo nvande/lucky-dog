@@ -59,7 +59,7 @@ function BrowseComponent() {
 
 	useEffect(() => {
 		if(!cookies.get('user')) {
-			setRedirect('/login');
+			setRedirect(process.env.REACT_APP_LOGIN_URL);
 		} else {
 			fetchBreeds();
 		}

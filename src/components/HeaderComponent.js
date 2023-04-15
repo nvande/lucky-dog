@@ -18,7 +18,7 @@ function HeaderComponent(){
         cookies.remove('name');
         cookies.remove('user');
         logout();
-        setRedirect('/');
+        setRedirect(process.env.REACT_APP_SITE_URL);
     }
 
     const renderTooltip = (props) => (
@@ -37,7 +37,7 @@ function HeaderComponent(){
 		<div className={'px-md-1 px-lg-2 pt-2 pb-0 pb-md-2 text-muted sticky-top text-md-start pageHeader text-white clearfix'}>
 			<Row className='container header-container'>
 				<Col xs="6">
-                    <Link to="/" className='page-title-link'>
+                    <Link to={process.env.REACT_APP_SITE_URL} className='page-title-link'>
                         <LogoBit/>
                     </Link>
 				</Col>
