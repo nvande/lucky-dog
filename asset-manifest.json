@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/lucky-dog/static/css/main.cdca44c6.css",
-    "main.js": "/lucky-dog/static/js/main.d2dc9395.js",
+    "main.js": "/lucky-dog/static/js/main.5f9ef475.js",
     "static/js/787.54192ea8.chunk.js": "/lucky-dog/static/js/787.54192ea8.chunk.js",
-    "static/media/dog5.png": "/lucky-dog/static/media/dog5.ddde3bf9dc3c1c3d8302.png",
-    "static/media/dog6.png": "/lucky-dog/static/media/dog6.4bd85aad6f3d64d7d998.png",
-    "static/media/dog4.png": "/lucky-dog/static/media/dog4.ae9efdce0eddf4c927dc.png",
-    "static/media/dog3.png": "/lucky-dog/static/media/dog3.3e8202ab11e071ea68a0.png",
-    "static/media/dog1.png": "/lucky-dog/static/media/dog1.1c072e74dc0095571a0b.png",
-    "static/media/dog2.png": "/lucky-dog/static/media/dog2.563a46b5d0eb7afdef3f.png",
+    "static/media/dog5.png": "/lucky-dog/static/media/dog5.b5d7312ccbb4b338fb83.png",
+    "static/media/dog4.png": "/lucky-dog/static/media/dog4.4ef74cde5bbf1be3689d.png",
+    "static/media/dog1.png": "/lucky-dog/static/media/dog1.3bc9e4e22b956c363628.png",
+    "static/media/dog6.png": "/lucky-dog/static/media/dog6.38177459a314811352b1.png",
+    "static/media/dog3.png": "/lucky-dog/static/media/dog3.29f2af3fe1a61fb7e592.png",
     "static/media/Pacifico-Regular.ttf": "/lucky-dog/static/media/Pacifico-Regular.c0d735fc04154e03a691.ttf",
+    "static/media/dog2.png": "/lucky-dog/static/media/dog2.131fdb0ad662b3b5dab9.png",
     "index.html": "/lucky-dog/index.html",
     "static/media/shape3.svg": "/lucky-dog/static/media/shape3.2027e1ee575576533db36693c1f86179.svg",
     "static/media/shape4.svg": "/lucky-dog/static/media/shape4.159c4a1d880af0cb84e040bcd047c5d1.svg",
@@ -21,11 +21,11 @@
     "static/media/shape6.svg": "/lucky-dog/static/media/shape6.cbcd00bb0c28ff453867df36e7e579f1.svg",
     "static/media/shape7.svg": "/lucky-dog/static/media/shape7.0f581b290e37529ab3cb4140384b8219.svg",
     "main.cdca44c6.css.map": "/lucky-dog/static/css/main.cdca44c6.css.map",
-    "main.d2dc9395.js.map": "/lucky-dog/static/js/main.d2dc9395.js.map",
+    "main.5f9ef475.js.map": "/lucky-dog/static/js/main.5f9ef475.js.map",
     "787.54192ea8.chunk.js.map": "/lucky-dog/static/js/787.54192ea8.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.cdca44c6.css",
-    "static/js/main.d2dc9395.js"
+    "static/js/main.5f9ef475.js"
   ]
 }
