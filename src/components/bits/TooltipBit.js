@@ -4,6 +4,7 @@ import { Tooltip, OverlayTrigger } from 'react-bootstrap';
 function TooltipBit(props) {
   const [show, setShow] = useState(false);
   const order = props.order ?? 1;
+  const showHelp = document.body.classList.contains('hide-tooltips');
 
   useEffect(() => {
     let showTimer, hideTimer;
@@ -20,7 +21,7 @@ function TooltipBit(props) {
         clearTimeout(showTimer);
         clearTimeout(hideTimer);
     };
-  }, [order]);
+  }, [order, showHelp]);
 
   return (
     <OverlayTrigger
