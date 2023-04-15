@@ -3,7 +3,6 @@ import { Tooltip, OverlayTrigger } from 'react-bootstrap';
 
 function TooltipBit(props) {
   const [show, setShow] = useState(false);
-
   const order = props.order ?? 1;
 
   useEffect(() => {
@@ -18,8 +17,8 @@ function TooltipBit(props) {
     }, 4000 * ( order + 1));
 
     return () => {
-    clearTimeout(showTimer);
-    clearTimeout(hideTimer);
+        clearTimeout(showTimer);
+        clearTimeout(hideTimer);
     };
   }, []);
 
