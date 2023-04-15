@@ -3,7 +3,6 @@ import BrowseComponent from '../components/BrowseComponent';
 import ToggleHelpBit from '../components/bits/ToggleHelpBit';
 
 function BrowsePage() {
-
     const byLine = Math.floor(Math.random() * 11);
 	return (
         <PageComponent>
