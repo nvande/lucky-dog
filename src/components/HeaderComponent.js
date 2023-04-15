@@ -15,8 +15,8 @@ function HeaderComponent(){
     const user = cookies.get('user');
 
     const clickLogout = () => {
-        cookies.remove('name');
-        cookies.remove('user');
+        cookies.remove('name', {path: '/'});
+        cookies.remove('user', {path: '/'});
         logout();
         setRedirect(process.env.REACT_APP_SITE_URL);
     }
