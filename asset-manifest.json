@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/lucky-dog/static/css/main.c2adbcce.css",
-    "main.js": "/lucky-dog/static/js/main.ae243c55.js",
+    "main.js": "/lucky-dog/static/js/main.920b0e95.js",
     "static/js/787.54192ea8.chunk.js": "/lucky-dog/static/js/787.54192ea8.chunk.js",
     "static/media/dog5.png": "/lucky-dog/static/media/dog5.ddde3bf9dc3c1c3d8302.png",
     "static/media/dog6.png": "/lucky-dog/static/media/dog6.4bd85aad6f3d64d7d998.png",
@@ -21,11 +21,11 @@
     "static/media/shape6.svg": "/lucky-dog/static/media/shape6.cbcd00bb0c28ff453867df36e7e579f1.svg",
     "static/media/shape7.svg": "/lucky-dog/static/media/shape7.0f581b290e37529ab3cb4140384b8219.svg",
     "main.c2adbcce.css.map": "/lucky-dog/static/css/main.c2adbcce.css.map",
-    "main.ae243c55.js.map": "/lucky-dog/static/js/main.ae243c55.js.map",
+    "main.920b0e95.js.map": "/lucky-dog/static/js/main.920b0e95.js.map",
     "787.54192ea8.chunk.js.map": "/lucky-dog/static/js/787.54192ea8.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.c2adbcce.css",
-    "static/js/main.ae243c55.js"
+    "static/js/main.920b0e95.js"
   ]
 }
