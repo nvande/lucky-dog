@@ -30,7 +30,7 @@ function ToggleHelpBit() {
     }
 
     return (
-        <Button className="show-help" onClick={toggleHelp}>
+        <Button className="show-help" data-testid="show-help" onClick={toggleHelp}>
             {showHelp ? <TbHelpOff/> : <TbHelp/>}
         </Button>
     );
