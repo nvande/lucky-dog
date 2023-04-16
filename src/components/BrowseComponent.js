@@ -141,8 +141,12 @@ function BrowseComponent() {
         try {
             await search(page, selectedBreeds, zips, sortAsc).then((response) => {
 			  if(response.success) {
-				setTotal(response.data.total);
-    		  	setResultIds(response.data.resultIds);
+				if(response.data && response.data.total) {
+					setTotal(response.data.total);
+					setResultIds(response.data.resultIds);
+				} else {
+					setDogLoading(false); // we are done loading early because we found no dogs
+				}
 			  } else {
 				setError(response.er ?? "Error while fetching results");
 			  }

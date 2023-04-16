@@ -16,22 +16,20 @@ function LocationSearchComponent({setZips, selectedStates, handleSelect, size, s
     const [loading, setLoading] = useState(false);
 
     const debouncedSearch = useDebouncedCallback(async (value, range) => {
-        if(searchValue !== '') {
-            setLoading(true);
-            const locObject = await getLocationInfo(value, selectedStates, range);
-            let zipObject = [];
-            if(locObject.success && locObject.total_results !== 0) {
-                zipObject = await getZips(locObject, selectedStates);
-                if(!zipObject.success) {
-                    setError(zipObject.er);
-                    setLoading(false);
-                }
-            } else {
-                setError(locObject.er);
+        setLoading(true);
+        const locObject = await getLocationInfo(value, selectedStates, range);
+        let zipObject = [];
+        if(locObject.success && locObject.total_results !== 0) {
+            zipObject = await getZips(locObject, selectedStates);
+            if(!zipObject.success) {
+                setError(zipObject.er);
+                setLoading(false);
             }
-            setZips(zipObject.zips);
-            setLoading(false);
+        } else {
+            setError(locObject.er);
         }
+        setZips(zipObject.zips);
+        setLoading(false);
     }, 1000);
 
     useEffect(() => {
