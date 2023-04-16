@@ -149,9 +149,7 @@ function BrowseComponent() {
 			});
         } catch (error) {
             setError(error);
-        } finally {
-			setDogLoading(false);
-		}
+        }
 	}
 
 	const fetchDogObjects = async(dogIds) => {
@@ -387,8 +385,6 @@ function BrowseComponent() {
     	);
     }
 
-	console.log(dogObjects);
-
 	return (
 	<>
 		{ error && 
@@ -475,7 +471,6 @@ function BrowseComponent() {
 						}
 						{dogObjects && !dogLoading && (dogObjects.length === 0) && !!resultIds.length &&
 							<>
-								<h1 className={console.log(resultIds)}/>
 								<h4 className='mt-5'>There's nothing here!</h4>
 								{numAlreadyFav > 0 &&
 									<h6> {`${numAlreadyFav} dog${numAlreadyFav > 1 ? 's' : ''} on this page ${numAlreadyFav > 1 ? 'are' : 'is'} already in your favorites.`} </h6>
@@ -490,7 +485,6 @@ function BrowseComponent() {
 						}
 						{dogObjects && !dogLoading && (dogObjects.length === 0) && !resultIds.length &&
 							<>
-								<h1 className={console.log(resultIds)}/>
 								<h4 className='mt-5'>No results!</h4>
 								{numAlreadyFav > 0 &&
 									<h6> {`${numAlreadyFav} dog${numAlreadyFav > 1 ? 's' : ''} on this page ${numAlreadyFav > 1 ? 'are' : 'is'} already in your favorites.`} </h6>
