@@ -117,7 +117,9 @@ const getDogCities = async (dogObjects) => {
     }
 
     locations.forEach((location, i) => {
-      dogCities[dogObjects[i].id] = `${location.city}, ${location.county} ${location.state} ${location.zip_code}`
+      dogCities[dogObjects[i].id] = location ?
+        `${location.city}, ${location.county} ${location.state} ${location.zip_code}` :
+        `Zip Code: ${dogObjects[i].zip_code}`
     });
   
     if(er) {

@@ -279,7 +279,7 @@ a.page-title-link {
   box-shadow: 0 4px 8px rgba(0,0,0,.15);
 }
 
-.page-title:after, .ldbutton:after {
+.page-title:after, .ldbutton:after, .match-button:after {
   content: '';
   position: absolute;
   top: 0;
