@@ -94,11 +94,6 @@ function LocationSearchComponent({setZips, selectedStates, handleSelect, size, s
     return (
         <Container fluid>
             <Row className="filter-group flex-column-reverse flex-lg-row-reverse mt-5">
-                {loading &&
-                    <span className='mt-2 mb-2'>
-                        <SpinnerBit/>
-                    </span>
-                }
                 <Col sm={12} lg={6} xl={5} xxl={4}>
                     <InputGroup className="mb-1 mb-md-3 sticky-top float-xs-start">
                         <TooltipBit tip="Specify a range in miles (optional)" order={2}/>
@@ -136,11 +131,16 @@ function LocationSearchComponent({setZips, selectedStates, handleSelect, size, s
                             placeholder={(['md', 'lg'].includes(size)) ? "Filter... " : "Filter by Zip, Address, City..."}
                             aria-label="Filter"
                             aria-describedby="basic-addon1"
-                            className='w-80'
+                            className='search-input'
                             value={searchValue}
                             onChange={handleSearchChange}
                             tabIndex="2"
                         />
+                        {loading &&
+                            <div className='search-spinner'>
+                                <SpinnerBit/>
+                            </div>
+                        }
                     </InputGroup>
                 </Col>
                 {!!selectedStates.length && 

@@ -3,7 +3,7 @@ import { Modal, Button } from 'react-bootstrap';
 import { FaPhone, FaDog, FaArrowLeft, FaHeart, FaArrowDown } from 'react-icons/fa';
 
 function MatchComponent({ matchedDog, city, yourName, clearMatch }) {
-    const [showPhone, setShowPhone] = useState(false);
+  const [showPhone, setShowPhone] = useState(false);
 
   return (
     <Modal show={matchedDog != null} onHide={clearMatch} dialogClassName="fullscreen-modal">

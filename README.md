@@ -7,6 +7,7 @@ You'll need to create a `.env` file in your lucky-dog project directory before y
 REACT_APP_SITE_URL = /lucky-dog
 REACT_APP_LOGIN_URL = /lucky-dog/login
 REACT_APP_BROWSE_URL = /lucky-dog/browse
+REACT_APP_PAGE_SIZE = 12
 REACT_APP_FETCH_API_URL = https://frontend-take-home-service.fetch.com
 REACT_APP_FETCH_API_KEY = {{PUT YOUR FETCH TAKE-HOME API KEY HERE}}
 REACT_APP_GEO_API_URL = https://api.opencagedata.com

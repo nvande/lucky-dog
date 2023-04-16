@@ -11,10 +11,11 @@ import { getDogs, getDogCities, matchDog } from '../utility/DogObjectUtility.js'
 import LocationSearchComponent from './location/LocationSearchComponent.js';
 import BreedDropdownComponent from './dogs/BreedDropdownComponent.js';
 import DogComponent from './dogs/DogComponent.js';
-import SpinnerBit from './bits/SpinnerBit.js';
 import TooltipBit from './bits/TooltipBit.js';
 import MatchButtonComponent from './dogs/MatchButtonComponent.js';
 import MatchComponent from './dogs/MatchComponent.js';
+import DogsLoadingBit from './bits/DogsLoadingBit.js';
+import FocusComponent from './dogs/FocusComponent.js';
 
 const PER_PAGE = process.env.REACT_APP_PAGE_SIZE;
 
@@ -37,11 +38,12 @@ function BrowseComponent() {
 	const [numAlreadyFav, setNumAlreadyFav] = useState(0);
 
 	const [matchedDog, setMatchedDog] = useState(null);
+	const [focusedDog, setFocusedDog] = useState(null);
 	
 	const [draggingR, setDraggingR] = useState(false);
 	const [draggingL, setDraggingL] = useState(false);
 
-	const [dogLoading, setDogLoading] = useState(false);
+	const [dogLoading, setDogLoading] = useState(true);
 	const [loadingBreeds, setLoadingBreeds] = useState(false);
 	const [matchLoading, setMatchLoading] = useState(false);
 	const [error, setError] = useState(null);
@@ -59,16 +61,29 @@ function BrowseComponent() {
 			setRedirect(process.env.REACT_APP_LOGIN_URL);
 		} else {
 			fetchBreeds();
+			const storedFavs = JSON.parse(window.localStorage.getItem('favDogs'));
+			if (storedFavs && storedFavs !== 'undefined') {
+				setFavDogObjects(storedFavs);
+				fetchCities(storedFavs);
+			} else {
+				setFavDogObjects([]);
+			}
 		}
 	}, []);
 
 	useEffect(() => {
-		fetchDogObjects(resultIds);
+		if(resultIds.length) {
+			fetchDogObjects(resultIds);
+		}
 	}, [resultIds]);
 
 	useEffect(() => {
 		fetchCities(dogObjects);
 	}, [dogObjects])
+
+	useEffect(() => {
+		fetchCities(favDogObjects);
+	}, [favDogObjects])
 
 	useEffect(() => {
 		setDidSearch(true);
@@ -88,18 +103,20 @@ function BrowseComponent() {
 				newDogs.push(dogObject);
 			}
 		});
-		let newCities = {};
-		try {
-			const response = await getDogCities(newDogs);
-			if(response.success) {
-				newCities = response.dogCities;
-			} else {
-				setError(response.er ?? "Error while dog cities");
+		if (newDogs.length ) {
+			let newCities = {};
+			try {
+				const response = await getDogCities(newDogs);
+				if(response.success) {
+					newCities = response.dogCities;
+				} else {
+					setError(response.er ?? "Error while dog cities");
+				}
+			} catch (error) {
+				setError(error);
 			}
-		} catch (error) {
-            setError(error);
-        }
-		setDogCities({...newCities, ...dogCities});
+			setDogCities({...newCities, ...dogCities});
+		}
 	};
 
 	const fetchBreeds = async() => {
@@ -120,9 +137,9 @@ function BrowseComponent() {
 	};
 
 	const fetchResults = async() => {
+		setDogLoading(true);
         try {
             await search(page, selectedBreeds, zips, sortAsc).then((response) => {
-				console.log(response);
 			  if(response.success) {
 				setTotal(response.data.total);
     		  	setResultIds(response.data.resultIds);
@@ -132,7 +149,9 @@ function BrowseComponent() {
 			});
         } catch (error) {
             setError(error);
-        }
+        } finally {
+			setDogLoading(false);
+		}
 	}
 
 	const fetchDogObjects = async(dogIds) => {
@@ -191,6 +210,8 @@ function BrowseComponent() {
 		// add dog to the new list
 		const newFavDogObjects = [...favDogObjects];
 		newFavDogObjects.push(removed);
+
+		window.localStorage.setItem('favDogs', JSON.stringify(newFavDogObjects));
 		setFavDogObjects(newFavDogObjects);
 	}
 
@@ -199,6 +220,7 @@ function BrowseComponent() {
 		const [removed] = favs.splice(index, 1);
 	
 		// remove action
+		window.localStorage.setItem('favDogs', JSON.stringify(favs));
 		setFavDogObjects(favs);
 	
 		// duplicate check
@@ -296,12 +318,14 @@ function BrowseComponent() {
 			newFavDogObjects.splice(result.destination.index, 0, removed);
 		  }
 
+		  window.localStorage.setItem('favDogs', newFavDogObjects);
 		  setFavDogObjects(newFavDogObjects);
 		} else if (sourceDroppableId === 'favDrop' && destinationDroppableId === 'dogDrop') {
 		  const favs = [...favDogObjects];
 		  const [removed] = favs.splice(result.source.index, 1);
 	  
 		  // remove action
+		  window.localStorage.setItem('favDogs', favs);
 		  setFavDogObjects(favs);
 	  
 		  // duplicate check
@@ -345,6 +369,10 @@ function BrowseComponent() {
 
 	const clearMatch = () => {
 		setMatchedDog(null);
+	}
+
+	const clearFocus = () => {
+		setFocusedDog(null);
 	}
 
 	const onClickMatch = () => {
@@ -403,36 +431,17 @@ function BrowseComponent() {
 				<Col xs={7} sm={9} md={10} className='scrolling-column'>
 					<div className={`d-block left-side-scroller${draggingR ? ' dragging' : ''}`}>
 						<TooltipBit tip="Drag dogs you like from over here..." order={5}/>
-						{dogLoading && 
-							<p className={'text-center'}>
-								<SpinnerBit className={'fs-1 mt-5'}/>
-							</p>
-						}
-						{!resultIds &&
-							<p className={'text-center'}>
-								No results.
-							</p>
-						}
-						{resultIds && dogObjects && !dogObjects.length && !dogLoading &&
-							<>
-								<h4 className='mt-5'>There's nothing here!</h4>
-								{numAlreadyFav > 0 &&
-									<h6> {`${numAlreadyFav} dog${numAlreadyFav > 1 ? 's' : ''} on this page ${numAlreadyFav > 1 ? 'are' : 'is'} already in your favorites.`} </h6>
-								}
-								<p className={'text-center'}>
-									You can either refine your search or keep browsing for dogs on the next page.
-								</p>
-								<h1 className='standout-text text-center'><FaDog/><FaHeart className='inline-icon'/></h1>
-							</>
-						}
 						{(zips && !zips.length) && !!didSearch && !dogLoading &&
 							<p className='text-muted fw-light'>
 								<FaGlobe className='inline-icon me-1'/> Showing dogs in all areas.
 							</p>
 						}
+						{dogLoading && 
+							<DogsLoadingBit/>
+						}
 						{dogObjects && !dogLoading &&
 							<StrictModeDroppable droppableId="dogDrop" direction="vertical">
-								{(provided, snapshot) => (
+								{(provided, _snapshot) => (
 									<Row
 									className="justify-content-center"
 									ref={provided.innerRef}
@@ -440,7 +449,7 @@ function BrowseComponent() {
 									>
 										{dogObjects.map((dogObject, index) => (
 											<Draggable key={dogObject.id} draggableId={dogObject.id} index={index}>
-											{(provided, snapshot) => (
+											{(provided, _snapshot) => (
 												<Col
 													xs={12} sm={6} md={4} lg={3}
 													className='dogObject'
@@ -453,6 +462,7 @@ function BrowseComponent() {
 														city={dogCities[dogObject.id]}
 														size="large"
 														addFunc={() => addToFavs(index)}
+														focusFunc={() => setFocusedDog(dogObject)}
 													/>
 												</Col>
 											)}
@@ -462,6 +472,34 @@ function BrowseComponent() {
 									</Row>
 								)}
 							</StrictModeDroppable>
+						}
+						{dogObjects && !dogLoading && (dogObjects.length === 0) && !!resultIds.length &&
+							<>
+								<h1 className={console.log(resultIds)}/>
+								<h4 className='mt-5'>There's nothing here!</h4>
+								{numAlreadyFav > 0 &&
+									<h6> {`${numAlreadyFav} dog${numAlreadyFav > 1 ? 's' : ''} on this page ${numAlreadyFav > 1 ? 'are' : 'is'} already in your favorites.`} </h6>
+								}
+								{page < Math.floor(total/PER_PAGE) &&
+								<p className={'text-center'}>
+									You can keep browsing for dogs on the next page.
+								</p>
+								}
+								<h1 className='standout-text text-center'><FaDog/><FaHeart className='inline-icon'/></h1>
+							</>
+						}
+						{dogObjects && !dogLoading && (dogObjects.length === 0) && !resultIds.length &&
+							<>
+								<h1 className={console.log(resultIds)}/>
+								<h4 className='mt-5'>No results!</h4>
+								{numAlreadyFav > 0 &&
+									<h6> {`${numAlreadyFav} dog${numAlreadyFav > 1 ? 's' : ''} on this page ${numAlreadyFav > 1 ? 'are' : 'is'} already in your favorites.`} </h6>
+								}
+								<p className={'text-center'}>
+									You can either refine your search or change your filters to find more dogs.
+								</p>
+								<h1 className='standout-text text-center'><FaDog/><FaHeart className='inline-icon'/></h1>
+							</>
 						}
 					</div>
 				</Col>
@@ -501,6 +539,7 @@ function BrowseComponent() {
 													city={dogCities[dogObject.id]}
 													size="small"
 													removeFunc={() => removeFromFavs(index)}
+													focusFunc={() => setFocusedDog(dogObject)}
 												/>
 											</div>
 										)}
@@ -529,6 +568,7 @@ function BrowseComponent() {
 		</div>
 	  }
 	  <MatchButtonComponent show={favDogObjects && !!favDogObjects.length} onClick={onClickMatch} loading={matchLoading}/>
+	  <FocusComponent focusedDog={focusedDog} city={focusedDog ? dogCities[focusedDog.id] : '' } clearFocus={clearFocus}/>
 	  <MatchComponent matchedDog={matchedDog} yourName={yourName} city={matchedDog ? dogCities[matchedDog.id] : '' } clearMatch={clearMatch}/>
 	</>
 	)

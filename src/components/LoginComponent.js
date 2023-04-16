@@ -61,7 +61,8 @@ export default function LoginComponent() {
         funct(prev => ({...prev, [name]: value}));
     };
 
-    const postLogin = async () => {
+    const postLogin = async (event) => {
+		event.preventDefault();
         setLoading(true);
 
         if(!validateFields()){
@@ -71,15 +72,14 @@ export default function LoginComponent() {
 
         try {
             await login( name, email ).then((response) => {
-				console.log(response);
                 if(response.success) {
+					setSuccess(true);
 					cookies.set('name', name, { path: '/', maxAge: 60 * 60 });
 					cookies.set('user', email, { path: '/', maxAge: 60 * 60 });
                     setRedirect(process.env.REACT_APP_BROWSE_URL);
                 }
             });
         } catch (error) {
-            console.log(error);
             setError(error);
         } finally {
             setLoading(false);
@@ -94,7 +94,7 @@ export default function LoginComponent() {
 
 	return (
 		<div>
-			<Form>
+			<Form onSubmit={(event) => postLogin(event)}>
                 <hr className='my-4 my-md-5 mx-3'/>
                 <h3 className='text-start mx-3'>Your basic info:</h3>
                 { error && 
@@ -183,7 +183,7 @@ export default function LoginComponent() {
 						</Col>
 					</Row>
                     <div className={'text-center mt-4'}>
-                        <Button className={'px-5 ldbutton'} onClick={postLogin}>
+                        <Button className={'px-5 ldbutton'} type="submit">
                             { loading ? <SpinnerBit/> : "View Dogs" }
                         </Button>
                     </div>

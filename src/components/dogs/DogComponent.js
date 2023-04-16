@@ -1,12 +1,22 @@
 import { Card, Button } from 'react-bootstrap';
 import SpinnerBit from '../bits/SpinnerBit';
-
 import { FaArrowRight, FaArrowLeft } from 'react-icons/fa';
-import { TfiHandDrag } from 'react-icons/tfi';
+import { TfiHandDrag, TfiZoomIn } from 'react-icons/tfi';
 
 
-function DogComponent({ dogObject, city, size, addFunc, removeFunc }) {
+function DogComponent({ dogObject, city, size, addFunc, removeFunc, focusFunc }) {
   const isLarge = size === 'large';
+    const icons = (isAdd) => {
+        return (
+            <>
+                <Button className='drag-icon'> <TfiHandDrag/> </Button>
+                <Button onClick={isAdd ? addFunc : removeFunc} className='take-icon'>
+                    {isAdd ? <FaArrowRight/> : <FaArrowLeft/> }
+                </Button>
+                <Button onClick={focusFunc} className='focus-icon'><TfiZoomIn/></Button>
+            </>
+        );
+    };
 
     if(isLarge) {
         return (
@@ -25,8 +35,7 @@ function DogComponent({ dogObject, city, size, addFunc, removeFunc }) {
                     </Card.ImgOverlay>
                     <Card.Title>
                         {dogObject.name}
-                        <Button className='drag-icon'> <TfiHandDrag/> </Button>
-                        <Button onClick={addFunc} className='take-icon'><FaArrowRight/></Button>
+                        {icons(true)}
                     </Card.Title>
                     <Card.Subtitle className="mb-2 text-muted">Age {dogObject.age}</Card.Subtitle>
                     <Card.Text className='text-muted fs-italic' >{dogObject.breed}</Card.Text>
@@ -54,8 +63,7 @@ function DogComponent({ dogObject, city, size, addFunc, removeFunc }) {
                     <Card.Text className='fs-italic side-text' >{dogObject.breed}</Card.Text>
                 </div>
             </div>
-            <Button onClick={removeFunc} className='take-icon'><FaArrowLeft/></Button>
-            <Button className='drag-icon'> <TfiHandDrag/> </Button>
+            {icons(false)}
         </Card>
     );
 }
