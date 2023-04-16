@@ -9,27 +9,32 @@ import { FaFilter } from 'react-icons/fa';
 import TooltipBit from '../bits/TooltipBit';
 import SpinnerBit from '../bits/SpinnerBit';
 
-function LocationSearchComponent({setZips, selectedStates, handleSelect, size, setError}) {
+function LocationSearchComponent({setZips, selectedStates, handleSelect, size, lastSearch, setLastSearch, setError}) {
     const [searchValue, setSearchValue] = useState('');
     const [distance, setDistance] = useState('');
     const [dropdownItems, setDropdownItems] = useState(states);
     const [loading, setLoading] = useState(false);
 
     const debouncedSearch = useDebouncedCallback(async (value, range) => {
-        setLoading(true);
-        const locObject = await getLocationInfo(value, selectedStates, range);
-        let zipObject = [];
-        if(locObject.success && locObject.total_results !== 0) {
-            zipObject = await getZips(locObject, selectedStates);
-            if(!zipObject.success) {
-                setError(zipObject.er);
-                setLoading(false);
+        if(searchValue !== '') {
+            setLoading(true);
+            const locObject = await getLocationInfo(value, selectedStates, range);
+            let zipObject = [];
+            if(locObject.success && locObject.total_results !== 0) {
+                zipObject = await getZips(locObject, selectedStates);
+                if(!zipObject.success) {
+                    setError(zipObject.er);
+                    setLoading(false);
+                }
+            } else {
+                setError(locObject.er);
             }
-        } else {
-            setError(locObject.er);
+            setZips(zipObject.zips);
+            setLastSearch(searchValue);
+            setLoading(false);
+        } else if (lastSearch && lastSearch !== searchValue) {
+            setZips([]);
         }
-        setZips(zipObject.zips);
-        setLoading(false);
     }, 1000);
 
     useEffect(() => {

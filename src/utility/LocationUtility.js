@@ -109,12 +109,14 @@ const getLocationInfo = async (searchString, selectedStates, range) => {
                 lon: lon + lonDelta
                 }
             };
-        } else {
-          er = "Error, no locations found. Please refine your search or contact support if this persists."
         }
       }
     } else {
       er = "Error reading location data. Please try again or contact support."
+    }
+
+    if(er) {
+      success = false;
     }
 
     return { success, city, states, geoBoundingBox, er };

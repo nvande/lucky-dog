@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import { Container, Row, Col, Button, ButtonGroup, Alert } from 'react-bootstrap';
-import { FaHeart, FaDog, FaGlobe } from 'react-icons/fa';
+import { FaHeart, FaDog, FaGlobe, FaFlag } from 'react-icons/fa';
 import { DragDropContext, Draggable } from 'react-beautiful-dnd';
 import Cookies from 'universal-cookie';
 import StrictModeDroppable from './dnd/StrictModeDroppable.js';
@@ -49,7 +49,7 @@ function BrowseComponent() {
 	const [error, setError] = useState(null);
 	const [redirect, setRedirect] = useState(null);
 
-	const [didSearch, setDidSearch] = useState(false);
+	const [lastSearch, setLastSearch] = useState(null);
 
 	const size = useBreakpoint();
 	const cookies = new Cookies();
@@ -86,7 +86,6 @@ function BrowseComponent() {
 	}, [favDogObjects])
 
 	useEffect(() => {
-		setDidSearch(true);
 		fetchResults();
 	}, [page, selectedBreeds, selectedStates, zips, sortAsc]);
 
@@ -407,6 +406,8 @@ function BrowseComponent() {
 					handleSelect={handleStateSelect}
 					size={size}
 					setError={setError}
+					lastSearch={lastSearch}
+					setLastSearch={setLastSearch}
 				/>
 				<div className="breed-button-wrapper">
 					<ButtonGroup className="text-center breed-button-group">
@@ -431,9 +432,14 @@ function BrowseComponent() {
 				<Col xs={7} sm={9} md={10} className='scrolling-column'>
 					<div className={`d-block left-side-scroller${draggingR ? ' dragging' : ''}`}>
 						<TooltipBit tip="Drag dogs you like from over here..." order={5}/>
-						{(zips && !zips.length) && !!didSearch && !dogLoading &&
+						{(zips && !zips.length) && !!lastSearch && !dogLoading &&
 							<p className='text-muted fw-light'>
 								<FaGlobe className='inline-icon me-1'/> Showing dogs in all areas.
+							</p>
+						}
+						{(zips && zips.length !== 0) && !!lastSearch && lastSearch!=="" && !dogLoading &&
+							<p className='text-muted fw-light'>
+								<FaFlag className='inline-icon me-1'/> Showing dogs for search: "{lastSearch}"
 							</p>
 						}
 						{dogLoading && 
