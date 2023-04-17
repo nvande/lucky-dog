@@ -4,9 +4,9 @@ because all dogs should be lucky
 You'll need to create a `.env` file in your lucky-dog project directory before you can start, and you'll need to add to it the following values:
 
 ```
-REACT_APP_SITE_URL = /lucky-dog
-REACT_APP_LOGIN_URL = /lucky-dog/login
-REACT_APP_BROWSE_URL = /lucky-dog/browse
+REACT_APP_HOME_URL = /lucky-dog
+REACT_APP_LOGIN_URL = /login
+REACT_APP_BROWSE_URL = /browse
 REACT_APP_PAGE_SIZE = 12
 REACT_APP_FETCH_API_URL = https://frontend-take-home-service.fetch.com
 REACT_APP_FETCH_API_KEY = {{PUT YOUR FETCH TAKE-HOME API KEY HERE}}

@@ -16,7 +16,7 @@ function HeaderComponent(){
         cookies.remove('name', {path: '/'});
         cookies.remove('user', {path: '/'});
         logout();
-        window.location.replace('/');
+        window.location.replace(process.env.REACT_APP_HOME_URL);
     }
 
     const renderTooltip = (props) => (

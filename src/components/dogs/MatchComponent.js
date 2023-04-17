@@ -62,7 +62,7 @@ function MatchComponent({ matchedDog, city, yourName, clearMatch }) {
                 <div className="match-details">
                     {matchedDog && 
                         <>
-                            <p className='fs-3'>Age: {matchedDog.age}</p>
+                            <p className='fs-3'>Age {matchedDog.age}</p>
                             <p>{city}</p>
                             <p className='fs-3'><FaDog className='inline-icon me-2'/><i>{matchedDog.breed}</i></p>
                         </>

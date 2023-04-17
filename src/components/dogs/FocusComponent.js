@@ -16,7 +16,7 @@ function FocusComponent({ focusedDog, city, clearFocus }) {
                 <div className="focus-details">
                     {focusedDog && 
                         <>
-                            <p className='fs-5'>Age: {focusedDog.age}</p>
+                            <p className='fs-5'>Age {focusedDog.age}</p>
                             <p>{city}</p>
                             <p className='fs-5'><FaDog className='inline-icon me-2'/><i>{focusedDog.breed}</i></p>
                         </>
